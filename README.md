@@ -20,10 +20,12 @@ Use an active voice when committing.
 ##### To install the project
 
 <br>
+
 1. `git clone [repoAdress]`
 2. `cd socketServer`
 3. `npm install`
 4. `npm start`
+
 <br>
 
 For unity part of the project
