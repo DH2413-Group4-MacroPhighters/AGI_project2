@@ -8,7 +8,9 @@ Shader "Unlit/waveShader"
         _WaveSpeed("Wave Speed", Float) = 0.5
         _WaveFreq( "Wave Frequency", Float) = 2.0
         _MaskAmp( "Mask AMplitude", Float) = 2.0
-        _MaskSpeed( "Mask speed", Float) = 0.
+        _MaskSpeed( "Mask speed", Float) = 0
+        _InflucenceFactor("Influence factor", Range(0,1)) = 0.1
+        _NormalUpThreashold( "Normal up threshold", Range(0,1)) = 0.05
     }
     SubShader
     {
@@ -33,17 +35,20 @@ Shader "Unlit/waveShader"
             
             float _MaskAmp;
             float _MaskSpeed;
+            float _InflucenceFactor;
+            float _NormalUpThreashold;
 
             struct MeshData
             {
                 float4 vertex : POSITION;
-                float2 uv : TEXCOORD0;
                 float3 normal: NORMAL;
+                float2 uv : TEXCOORD0;
             };
 
             struct Interpolator
             {
                 float4 vertex : SV_POSITION;
+                float3 normals: NORMAL;
                 float2 uv : TEXCOORD0;
             };
             
@@ -54,13 +59,15 @@ Shader "Unlit/waveShader"
                 float2 subUV = v.uv;
                 subUV.x += _MaskSpeed*_Time.y;
                 
-                float mask = tex2Dlod(_MainTex, float4(subUV, 0, 0))*_MaskAmp;
-
+                const float mask = tex2Dlod(_MainTex, float4(subUV, 0, 0))*_MaskAmp;
+                
                 float wave = _WaveAmp*cos(_WaveFreq*(v.vertex.x + _Time.y*_WaveSpeed));
                 wave*=  _WaveAmp*cos(_WaveFreq*(v.vertex.z + _Time.y*_WaveSpeed));
                 
-                v.vertex.y = mask + wave;
+
+                v.vertex.y += (length(v.normal - float3(0,1,0)) < _NormalUpThreashold)*_InflucenceFactor*(mask + wave);
                 o.vertex = UnityObjectToClipPos(v.vertex);
+                o.normals = UnityObjectToWorldNormal(v.normal);
                 o.uv = v.uv;
                 return o;
             } 
@@ -72,7 +79,9 @@ Shader "Unlit/waveShader"
                 // sample the texture
                 //fixed4 col = tex2D(_MainTex, i.uv);
                 
+                //return float4(normalize(i.normals), 1);
                 return _Color;
+                //return float4(0,i.vertex.xy,1);
             }
             ENDCG
         }
