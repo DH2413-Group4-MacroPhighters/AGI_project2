@@ -1,0 +1,22 @@
+{
+  "name": "socket_io_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "ws": "^8.2.3"
+  },
+  "devDependencies": {
+    "socket.io": "^4.3.2"
+  }
+}
