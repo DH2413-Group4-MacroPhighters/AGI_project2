@@ -3,7 +3,72 @@ guid: 7849e1277d8774516a17f65733e0dfb7
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bush1.001_Icosphere.002Mat
+    second: {fileID: -4613386118060797520, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bush1.002_Icosphere.004Mat
+    second: {fileID: 5384764664701108034, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bush2.001_Icosphere.001Mat
+    second: {fileID: -5598448715726598668, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Grass1.001_Cube.003Mat
+    second: {fileID: -7933228158295268188, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Grass2.001_Cube.002Mat
+    second: {fileID: -5515672581707803819, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Plane.001Mat
+    second: {fileID: -5101539043182603374, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rock3.001_Icosphere.006Mat
+    second: {fileID: -6808908260510366775, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rock4.001_Cylinder.001Mat
+    second: {fileID: 6191486696314447099, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rock4.002_Cylinder.002Mat
+    second: {fileID: -4740071571404612580, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Stump1.001_Cylinder.005Mat
+    second: {fileID: 4702580329508711620, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tree1.001_Cube.000Mat
+    second: {fileID: 3912032467936816252, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tree1.002_Cube.001Mat
+    second: {fileID: -7032675338578408311, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Tree2.001_Cylinder.000Mat
+    second: {fileID: -7638804293758542495, guid: 7849e1277d8774516a17f65733e0dfb7, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
