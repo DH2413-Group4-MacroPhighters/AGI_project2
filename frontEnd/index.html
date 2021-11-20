@@ -51,18 +51,27 @@
     </style>
 </head>
 <body>
-
 <ul id="messages"></ul>
 <form id="form" action="">
     <input id="input" autocomplete="off" />
     <button>Send</button>
 </form>
 
-<script>
-    const socket = new WebSocket('ws://localhost:3001')
+<canvas id="canvas" width="600" height="600" style="border:solid black 1px;">
+    Your browser does not support canvas element.
+</canvas>
+
+
+<script >
+    var host = "<%= host %>";
+    var port = "<%= port %>";
+    console.log('Host: ' + host + ':' + port);
+    const socket = new WebSocket('ws://' + host + ':' + port);
 
     let form = document.getElementById('form');
     let input = document.getElementById('input');
+    let canvas = document.getElementById("canvas");
+    let ongoingTouches = [];
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -71,6 +80,101 @@
             input.value = '';
         }
     });
+
+    function handleStart(evt) {
+        // Invoke the appropriate handler depending on the
+        // number of touch points.
+        switch (evt.touches.length) {
+            case 1: handle_one_touch(evt); break;
+            case 2: handle_two_touches(evt); break;
+            default: console.log("Not supported"); break;
+        }
+    }
+
+    function startup() {
+        canvas.addEventListener("touchstart", handleStart, false);
+        canvas.addEventListener("touchend", handleEnd, false);
+        canvas.addEventListener("touchcancel", handleCancel, false);
+        canvas.addEventListener("touchmove", handleMove, false);
+    }
+
+    function handle_one_touch(evt) {
+        evt.preventDefault();
+        console.log("touchstart.");
+        sendCoordinates(evt.touches[0], 1);
+    }
+
+    function handle_two_touches(evt) {
+        evt.preventDefault();
+        console.log("touchstart.");
+        sendCoordinates(evt.touches[0], 1);
+        sendCoordinates(evt.touches[1], 2);
+    }
+
+    function sendCoordinates(touch, touchnum) {
+        socket.send("touch: " + touch.clientX + " " + touch.clientY + " " + touchnum);
+    }
+
+    function handleMove(evt) {
+        evt.preventDefault();
+        socket.send("touch move");
+        var touches = evt.changedTouches;
+        for (var i = 0; i < touches.length; i++) {
+            var idx = ongoingTouchIndexById(touches[i].identifier);
+
+            if (idx >= 0) {
+                console.log("continuing touch "+idx);
+
+                socket.send("Move to " + ongoingTouches[idx].pageX + ", " + ongoingTouches[idx].pageY);
+                socket.send("Line to " + touches[i].pageX + ", " + touches[i].pageY);
+
+                ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+                console.log(".");
+            } else {
+                console.log("can't figure out which touch to continue");
+            }
+        }
+    }
+
+    function handleEnd(evt) {
+        evt.preventDefault();
+        log("touchend");
+        var touches = evt.changedTouches;
+        socket.send("touch end");
+        for (var i = 0; i < touches.length; i++) {
+            var idx = ongoingTouchIndexById(touches[i].identifier);
+
+            if (idx >= 0) {
+                ongoingTouches.splice(idx, 1);  // remove it; we're done
+                socket.send("end touch");
+            } else {
+                console.log("can't figure out which touch to end");
+            }
+        }
+    }
+
+    function handleCancel(evt) {
+        evt.preventDefault();
+        console.log("touchcancel.");
+        var touches = evt.changedTouches;
+        socket.send("touch cancel");
+        for (var i = 0; i < touches.length; i++) {
+            var idx = ongoingTouchIndexById(touches[i].identifier);
+            ongoingTouches.splice(idx, 1);  // remove it; we're done
+            socket.send("touch canceled")
+        }
+    }
+
+    function fixTouchMove( event )
+    {
+        return;
+    }
+
+    // Remove any previous listners as the page content is ajax loaded and body is never destroyed
+    document.body.removeEventListener( "touchstart", fixTouchMove );
+    document.body.addEventListener( "touchstart", fixTouchMove );
+
+    document.addEventListener("DOMContentLoaded", startup);
 
     socket.onmessage = (event)=>{
 

@@ -15,6 +15,7 @@ Use an active voice when committing.
 ## Dependencies:
 - node.js
 - npm
+- ejs
 - unity
 
 ##### To install the project
@@ -23,6 +24,7 @@ Use an active voice when committing.
 
 1. `git clone [repoAdress]`
 2. `cd socketServer`
+3. --Change the HostIP in config.json to your IP adress on the local network--
 3. `npm install`
 4. `npm start`
 

@@ -1,5 +1,7 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using WebSocketSharp;
 
@@ -8,20 +10,35 @@ public class SocketServer : MonoBehaviour
     WebSocket ws;
         private void Start()
         {
-            ws = new WebSocket("ws://localhost:3001");
+            string json = "{}";
+            using (StreamReader r = new StreamReader("../config.json"))
+            {
+                json = r.ReadToEnd();
+            }
+            CONFIG config = JsonConvert.DeserializeObject<CONFIG>(json);
+            ws = new WebSocket("ws://" + config.HostIP + ":" + config.PortWs);
             ws.Connect();
             ws.OnMessage += (sender, e) =>
             {
                 Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
             };
-        }private void Update()
+        }
+        private void Update()
         {
             if(ws == null)
             {
                 return;
             }if (Input.GetKeyDown(KeyCode.Space))
             {
-                ws.Send("Hello from UNITY MY LITTLE FRIEND");
+                ws.Send("Hello from  UNITY MY LITTLE FRIEND");
             }  
         }
+}
+
+public class CONFIG
+{
+    public int PortServer;
+    public int PortWs;
+    public string LocalIP;
+    public string HostIP;
 }
