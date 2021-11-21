@@ -21,6 +21,10 @@ app.get('/', (req, res) => {
     res.render(path.join(__dirname,  '..',  'frontEnd',  'index.html'), {host:host, port:portWs});
 });
 
+app.get('/map.png', (req, res) => {
+    res.sendFile(path.join(__dirname,  '..',  'frontEnd',  'map.png'));
+});
+
 app.use(logger("short"))
 
 server.listen(port, () => {

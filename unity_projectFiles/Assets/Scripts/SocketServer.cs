@@ -8,6 +8,14 @@ using WebSocketSharp;
 public class SocketServer : MonoBehaviour
 {
     WebSocket ws;
+    public GameObject tree;
+    public GameObject scenePart;
+
+    private long placeX;
+
+    private long placeZ;
+
+    private bool placeFlag = false;
         private void Start()
         {
             CONFIG config = readCONFIG();
@@ -16,10 +24,15 @@ public class SocketServer : MonoBehaviour
             ws.OnMessage += (sender, e) =>
             {
                 Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
+                DATA data = readDATA(e.Data);
+                handleData(data);
             };
         }
         private void Update()
         {
+            if (placeFlag) {
+                PlaceObject();
+            }
             if(ws == null)
             {
                 return;
@@ -27,6 +40,29 @@ public class SocketServer : MonoBehaviour
             {
                 ws.Send("Hello from  UNITY MY LITTLE FRIEND");
             }  
+        }
+
+        private void handleData(DATA data) {
+            if (data.type == "touchstart") {
+                placeX = data.x;
+                placeZ = data.y;
+                placeFlag = true;
+            }
+        }
+
+        private void PlaceObject()
+        {
+            Debug.Log("place object");
+            Vector3 position = scenePart.transform.Find("Middle").transform.position;
+            position = position + new Vector3(-placeX/10, 0, placeZ/10);
+            Quaternion rotation = scenePart.transform.rotation;
+            Instantiate(tree, position, rotation);
+            placeFlag = false;
+        }
+
+        private DATA readDATA(string json) {
+            DATA data = JsonConvert.DeserializeObject<DATA>(json);
+            return data;
         }
 
         private CONFIG readCONFIG() {
@@ -47,3 +83,13 @@ public class CONFIG
     public string LocalIP;
     public string HostIP;
 }
+
+public class DATA
+{
+    public string type;
+    public long x;
+    public long y;
+    public int touchID;
+}
+
+

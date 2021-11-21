@@ -51,16 +51,19 @@
     </style>
 </head>
 <body>
-<ul id="messages"></ul>
-<form id="form" action="">
-    <input id="input" autocomplete="off" />
-    <button>Send</button>
-</form>
-
 <!--- If you want to test touch data you can use this canvas - just make it bigger. --->
-<canvas id="canvas" width="0" height="0" style="border:solid black 1px;">
+<canvas id="canvas" width="635" height="670" style="border:solid black 1px;">
     Your browser does not support canvas element.
 </canvas>
+<br>
+<p style="font-size:32px;"><strong>Tap a place on the map to add a tree!</strong></p>
+
+
+<ul id="messages"></ul>
+<form id="form" action="">
+    <!---<input id="input" autocomplete="off" />
+    <button>Send</button>--->
+</form>
 
 <script >
     var host = "<%= host %>";
@@ -72,6 +75,13 @@
     let input = document.getElementById('input');
     let canvas = document.getElementById("canvas");
 
+    var img = new Image();
+    img.src = "/map.png"
+    img.onload = function () {
+        var ctx = canvas.getContext("2d");
+        drawImageScaled(img, ctx);
+    };
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         if (input.value) {
@@ -80,6 +90,7 @@
         }
     });
 
+
     socket.onmessage = (event)=>{
         console.log(event)
         console.log(event.data)
@@ -87,7 +98,18 @@
         const item = document.createElement('li');
         item.textContent = event.data;
         messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
+        //window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function drawImageScaled(img, ctx) {
+        var canvas = ctx.canvas ;
+        var hRatio = canvas.width  / img.width    ;
+        var vRatio = canvas.height / img.height  ;
+        var ratio  = Math.min ( hRatio, vRatio );
+        var centerShift_x = ( canvas.width - img.width*ratio ) / 2;
+        var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.drawImage(img, 0,0, img.width, img.height,centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
     }
 
 
@@ -125,7 +147,7 @@
     }
 
     function sendCoordinates(touchtype, touch, touchnum) {
-        var data = '{ "type:' + touchtype + ', "x:"' + touch.clientX + ', "y:"' + touch.clientY + ', "touchID:"' + touchnum + '}';
+        var data = '{ "type":' + '"' + touchtype + '"' + ', "x":' + touch.clientX + ', "y":' + touch.clientY + ', "touchID":' + touchnum + '}';
         socket.send(data);
     }
 
