@@ -74,12 +74,12 @@
     let form = document.getElementById('form');
     let input = document.getElementById('input');
     let canvas = document.getElementById("canvas");
+    let ctx = canvas.getContext("2d");
 
     var img = new Image();
     img.src = "/map.png"
     img.onload = function () {
-        var ctx = canvas.getContext("2d");
-        drawImageScaled(img, ctx);
+        drawImageScaled(img);
     };
 
     form.addEventListener('submit', function(e) {
@@ -94,15 +94,15 @@
     socket.onmessage = (event)=>{
         console.log(event)
         console.log(event.data)
-
-        const item = document.createElement('li');
-        item.textContent = event.data;
-        messages.appendChild(item);
+        const json = JSON.parse(event.data);
+        drawTree(json.x, json.y);
+        //const item = document.createElement('li');
+        //item.textContent = event.data;
+        //messages.appendChild(item);
         //window.scrollTo(0, document.body.scrollHeight);
     }
 
-    function drawImageScaled(img, ctx) {
-        var canvas = ctx.canvas ;
+    function drawImageScaled(img) {
         var hRatio = canvas.width  / img.width    ;
         var vRatio = canvas.height / img.height  ;
         var ratio  = Math.min ( hRatio, vRatio );
@@ -149,6 +149,22 @@
     function sendCoordinates(touchtype, touch, touchnum) {
         var data = '{ "type":' + '"' + touchtype + '"' + ', "x":' + touch.clientX + ', "y":' + touch.clientY + ', "touchID":' + touchnum + '}';
         socket.send(data);
+    }
+
+    function drawTree(x, y) {
+        var img2 = new Image();
+        img2.src = "/tree.png"
+        img2.onload = function () {
+            drawImageInPlace(img2, x, y);
+        };
+    }
+
+    function drawImageInPlace(img, x, y) {
+        var xSize = img.width/2;
+        var ySize = img.height/2;
+        var xPlace = x - xSize/2;
+        var yPlace = y - ySize/2;
+        ctx.drawImage(img, xPlace, yPlace, xSize, ySize);
     }
 
     function handleMove(evt) {

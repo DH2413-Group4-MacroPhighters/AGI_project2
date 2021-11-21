@@ -25,10 +25,15 @@ app.get('/map.png', (req, res) => {
     res.sendFile(path.join(__dirname,  '..',  'frontEnd',  'map.png'));
 });
 
+app.get('/tree.png', (req, res) => {
+    res.sendFile(path.join(__dirname,  '..',  'frontEnd',  'tree.png'));
+});
+
 app.use(logger("short"))
 
 server.listen(port, () => {
     console.log('listening on http://' + localIP + ':' + port);
+    console.log('Go to http://' + host + ':' + port);
 });
 
 socketHandler.Start(port)
