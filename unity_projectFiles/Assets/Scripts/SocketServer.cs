@@ -10,12 +10,7 @@ public class SocketServer : MonoBehaviour
     WebSocket ws;
         private void Start()
         {
-            string json = "{}";
-            using (StreamReader r = new StreamReader("../config.json"))
-            {
-                json = r.ReadToEnd();
-            }
-            CONFIG config = JsonConvert.DeserializeObject<CONFIG>(json);
+            CONFIG config = readCONFIG();
             ws = new WebSocket("ws://" + config.HostIP + ":" + config.PortWs);
             ws.Connect();
             ws.OnMessage += (sender, e) =>
@@ -32,6 +27,16 @@ public class SocketServer : MonoBehaviour
             {
                 ws.Send("Hello from  UNITY MY LITTLE FRIEND");
             }  
+        }
+
+        private CONFIG readCONFIG() {
+            string json = "{}";
+            using (StreamReader r = new StreamReader("../config.json"))
+            {
+                json = r.ReadToEnd();
+            }
+            CONFIG config = JsonConvert.DeserializeObject<CONFIG>(json);
+            return config;
         }
 }
 
