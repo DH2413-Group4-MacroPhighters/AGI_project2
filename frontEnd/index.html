@@ -57,10 +57,10 @@
     <button>Send</button>
 </form>
 
-<canvas id="canvas" width="600" height="600" style="border:solid black 1px;">
+<!--- If you want to test touch data you can use this canvas - just make it bigger. --->
+<canvas id="canvas" width="0" height="0" style="border:solid black 1px;">
     Your browser does not support canvas element.
 </canvas>
-
 
 <script >
     var host = "<%= host %>";
@@ -71,7 +71,6 @@
     let form = document.getElementById('form');
     let input = document.getElementById('input');
     let canvas = document.getElementById("canvas");
-    let ongoingTouches = [];
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -80,6 +79,27 @@
             input.value = '';
         }
     });
+
+    socket.onmessage = (event)=>{
+        console.log(event)
+        console.log(event.data)
+
+        const item = document.createElement('li');
+        item.textContent = event.data;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+
+    // Below this line is a bunch of code for handling/sending touch data
+
+
+    function startup() {
+        canvas.addEventListener("touchstart", handleStart, false);
+        canvas.addEventListener("touchend", handleEnd, false);
+        canvas.addEventListener("touchcancel", handleCancel, false);
+        canvas.addEventListener("touchmove", handleMove, false);
+    }
 
     function handleStart(evt) {
         // Invoke the appropriate handler depending on the
@@ -91,28 +111,22 @@
         }
     }
 
-    function startup() {
-        canvas.addEventListener("touchstart", handleStart, false);
-        canvas.addEventListener("touchend", handleEnd, false);
-        canvas.addEventListener("touchcancel", handleCancel, false);
-        canvas.addEventListener("touchmove", handleMove, false);
-    }
-
     function handle_one_touch(evt) {
         evt.preventDefault();
         console.log("touchstart.");
-        sendCoordinates(evt.touches[0], 1);
+        sendCoordinates("touchstart", evt.touches[0], 1);
     }
 
     function handle_two_touches(evt) {
         evt.preventDefault();
         console.log("touchstart.");
-        sendCoordinates(evt.touches[0], 1);
-        sendCoordinates(evt.touches[1], 2);
+        sendCoordinates("touchstart", evt.touches[0], 1);
+        sendCoordinates("touchstart", evt.touches[1], 2);
     }
 
-    function sendCoordinates(touch, touchnum) {
-        socket.send("touch: " + touch.clientX + " " + touch.clientY + " " + touchnum);
+    function sendCoordinates(touchtype, touch, touchnum) {
+        var data = '{ "type:' + touchtype + ', "x:"' + touch.clientX + ', "y:"' + touch.clientY + ', "touchID:"' + touchnum + '}';
+        socket.send(data);
     }
 
     function handleMove(evt) {
@@ -175,17 +189,6 @@
     document.body.addEventListener( "touchstart", fixTouchMove );
 
     document.addEventListener("DOMContentLoaded", startup);
-
-    socket.onmessage = (event)=>{
-
-        console.log(event)
-        console.log(event.data)
-
-        const item = document.createElement('li');
-        item.textContent = event.data;
-        messages.appendChild(item);
-        window.scrollTo(0, document.body.scrollHeight);
-    }
 
     /*
     *

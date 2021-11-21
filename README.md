@@ -16,6 +16,7 @@ Use an active voice when committing.
 - node.js
 - npm
 - ejs
+- pug
 - unity
 
 ##### To install the project
