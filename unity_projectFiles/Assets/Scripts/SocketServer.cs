@@ -10,6 +10,7 @@ public class SocketServer : MonoBehaviour
     WebSocket ws;
     public GameObject tree;
     public GameObject scenePart;
+    
 
     private long placeX;
 
@@ -27,6 +28,9 @@ public class SocketServer : MonoBehaviour
                 DATA data = readDATA(e.Data);
                 handleData(data);
             };
+            
+            CaptureImg();
+            StartCoroutine(ImageSender.SendImageToServer("http://" + config.HostIP + ":" + config.PortServer+"/mapPost"));
         }
         private void Update()
         {
@@ -73,6 +77,11 @@ public class SocketServer : MonoBehaviour
             }
             CONFIG config = JsonConvert.DeserializeObject<CONFIG>(json);
             return config;
+        }
+
+        private void CaptureImg()
+        {
+            ScreenCapture.CaptureScreenshot(Application.dataPath + "/Images/map.png");
         }
 }
 
