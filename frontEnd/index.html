@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <title>Climate_ART</title>
     <style>
         body {
@@ -48,6 +50,9 @@
         #messages > li:nth-child(odd) {
             background: #efefef;
         }
+        #map { 
+            height: 180px; 
+        }
     </style>
 </head>
 <body>
@@ -57,6 +62,8 @@
 </canvas>
 <br>
 <p style="font-size:32px;"><strong>Tap a place on the map to add a tree!</strong></p>
+<br>
+<div id="map"></div>
 
 
 <ul id="messages"></ul>
@@ -91,16 +98,32 @@
     });
 
 
+    //Handles data sent from the server (for now only drawing tree image in the right spot)
     socket.onmessage = (event)=>{
         console.log(event)
         console.log(event.data)
         const json = JSON.parse(event.data);
         drawTree(json.x, json.y);
-        //const item = document.createElement('li');
-        //item.textContent = event.data;
-        //messages.appendChild(item);
-        //window.scrollTo(0, document.body.scrollHeight);
     }
+
+    //Loading the tree image and draws it with (x,y) as center.
+    function drawTree(x, y) {
+        var img2 = new Image();
+        img2.src = "/tree.png"
+        img2.onload = function () {
+            drawImageInPlace(img2, x, y);
+        };
+    }
+
+    //Draws image (half size of original for now), with (x,y) as center, on top of any image already drawn
+    function drawImageInPlace(img, x, y) {
+        var xSize = img.width/2;
+        var ySize = img.height/2;
+        var xPlace = x - xSize/2;
+        var yPlace = y - ySize/2;
+        ctx.drawImage(img, xPlace, yPlace, xSize, ySize);
+    }
+
 
     function drawImageScaled(img) {
         var hRatio = canvas.width  / img.width    ;
@@ -111,6 +134,8 @@
         ctx.clearRect(0,0,canvas.width, canvas.height);
         ctx.drawImage(img, 0,0, img.width, img.height,centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
     }
+
+    var map = L.map('map').setView([51.505, -0.09], 13);
 
 
     // Below this line is a bunch of code for handling/sending touch data
@@ -124,8 +149,7 @@
     }
 
     function handleStart(evt) {
-        // Invoke the appropriate handler depending on the
-        // number of touch points.
+        // Invoke the correct handler depending on the number of touch points.
         switch (evt.touches.length) {
             case 1: handle_one_touch(evt); break;
             case 2: handle_two_touches(evt); break;
@@ -146,25 +170,10 @@
         sendCoordinates("touchstart", evt.touches[1], 2);
     }
 
+    //Send the coordinates of spot which was tapped by user
     function sendCoordinates(touchtype, touch, touchnum) {
         var data = '{ "type":' + '"' + touchtype + '"' + ', "x":' + touch.clientX + ', "y":' + touch.clientY + ', "touchID":' + touchnum + '}';
         socket.send(data);
-    }
-
-    function drawTree(x, y) {
-        var img2 = new Image();
-        img2.src = "/tree.png"
-        img2.onload = function () {
-            drawImageInPlace(img2, x, y);
-        };
-    }
-
-    function drawImageInPlace(img, x, y) {
-        var xSize = img.width/2;
-        var ySize = img.height/2;
-        var xPlace = x - xSize/2;
-        var yPlace = y - ySize/2;
-        ctx.drawImage(img, xPlace, yPlace, xSize, ySize);
     }
 
     function handleMove(evt) {
