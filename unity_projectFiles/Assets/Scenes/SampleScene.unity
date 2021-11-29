@@ -2200,7 +2200,6 @@ Transform:
   - {fileID: 256465970}
   - {fileID: 1281986545}
   - {fileID: 129997526}
-  - {fileID: 749723446}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

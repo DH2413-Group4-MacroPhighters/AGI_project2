@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
     <title>Climate_ART</title>
     <style>
         body {
@@ -48,15 +50,15 @@
         #messages > li:nth-child(odd) {
             background: #efefef;
         }
+        #map { 
+            height: 900px;
+        }
     </style>
 </head>
 <body>
-<!--- If you want to test touch data you can use this canvas - just make it bigger. --->
-<canvas id="canvas" width="635" height="670" style="border:solid black 1px;">
-    Your browser does not support canvas element.
-</canvas>
-<br>
 <p style="font-size:32px;"><strong>Tap a place on the map to add a tree!</strong></p>
+<br>
+<div id="map"></div>
 
 
 <ul id="messages"></ul>
@@ -73,14 +75,11 @@
 
     let form = document.getElementById('form');
     let input = document.getElementById('input');
-    let canvas = document.getElementById("canvas");
-    let ctx = canvas.getContext("2d");
 
-    var img = new Image();
-    img.src = "/map.png"
-    img.onload = function () {
-        drawImageScaled(img);
-    };
+    var map = L.map('map').setView([0, 0], 4);
+
+    var imageUrl = '/map.png', imageBounds = [[-34,-34.4], [34.3, 36.8]];
+    let overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -91,143 +90,36 @@
     });
 
 
+    //Handles data sent from the server (for now only drawing tree image in the right spot)
     socket.onmessage = (event)=>{
         console.log(event)
         console.log(event.data)
         const json = JSON.parse(event.data);
         drawTree(json.x, json.y);
-        //const item = document.createElement('li');
-        //item.textContent = event.data;
-        //messages.appendChild(item);
-        //window.scrollTo(0, document.body.scrollHeight);
     }
 
-    function drawImageScaled(img) {
-        var hRatio = canvas.width  / img.width    ;
-        var vRatio = canvas.height / img.height  ;
-        var ratio  = Math.min ( hRatio, vRatio );
-        var centerShift_x = ( canvas.width - img.width*ratio ) / 2;
-        var centerShift_y = ( canvas.height - img.height*ratio ) / 2;  
-        ctx.clearRect(0,0,canvas.width, canvas.height);
-        ctx.drawImage(img, 0,0, img.width, img.height,centerShift_x,centerShift_y,img.width*ratio, img.height*ratio);  
+    //Loading the tree image and draws it with (x,y) as center.
+    function drawTree(x, y) {
+        var lowX = x-4;
+        var highX = x+4;
+        var lowY = y-4;
+        var highY = y+4;
+        var imageUrl = '/tree.png', imageBounds = [[lowY,lowX], [highY, highX]];
+        let overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
     }
 
+    overlay.on('click', function(d) {
+        var coord = d.latlng;
+        var lng = coord.lng;
+        var lat = coord.lat;
+        sendCoords("touchstart", lng, lat);
+    });
 
-    // Below this line is a bunch of code for handling/sending touch data
-
-
-    function startup() {
-        canvas.addEventListener("touchstart", handleStart, false);
-        canvas.addEventListener("touchend", handleEnd, false);
-        canvas.addEventListener("touchcancel", handleCancel, false);
-        canvas.addEventListener("touchmove", handleMove, false);
-    }
-
-    function handleStart(evt) {
-        // Invoke the appropriate handler depending on the
-        // number of touch points.
-        switch (evt.touches.length) {
-            case 1: handle_one_touch(evt); break;
-            case 2: handle_two_touches(evt); break;
-            default: console.log("Not supported"); break;
-        }
-    }
-
-    function handle_one_touch(evt) {
-        evt.preventDefault();
-        console.log("touchstart.");
-        sendCoordinates("touchstart", evt.touches[0], 1);
-    }
-
-    function handle_two_touches(evt) {
-        evt.preventDefault();
-        console.log("touchstart.");
-        sendCoordinates("touchstart", evt.touches[0], 1);
-        sendCoordinates("touchstart", evt.touches[1], 2);
-    }
-
-    function sendCoordinates(touchtype, touch, touchnum) {
-        var data = '{ "type":' + '"' + touchtype + '"' + ', "x":' + touch.clientX + ', "y":' + touch.clientY + ', "touchID":' + touchnum + '}';
+    //Send the coordinates of spot which was tapped by user
+    function sendCoords(touchtype, x, y) {
+        var data = '{ "type":' + '"' + touchtype + '"' + ', "x":' + x + ', "y":' + y + '}';
         socket.send(data);
     }
-
-    function drawTree(x, y) {
-        var img2 = new Image();
-        img2.src = "/tree.png"
-        img2.onload = function () {
-            drawImageInPlace(img2, x, y);
-        };
-    }
-
-    function drawImageInPlace(img, x, y) {
-        var xSize = img.width/2;
-        var ySize = img.height/2;
-        var xPlace = x - xSize/2;
-        var yPlace = y - ySize/2;
-        ctx.drawImage(img, xPlace, yPlace, xSize, ySize);
-    }
-
-    function handleMove(evt) {
-        evt.preventDefault();
-        socket.send("touch move");
-        var touches = evt.changedTouches;
-        for (var i = 0; i < touches.length; i++) {
-            var idx = ongoingTouchIndexById(touches[i].identifier);
-
-            if (idx >= 0) {
-                console.log("continuing touch "+idx);
-
-                socket.send("Move to " + ongoingTouches[idx].pageX + ", " + ongoingTouches[idx].pageY);
-                socket.send("Line to " + touches[i].pageX + ", " + touches[i].pageY);
-
-                ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
-                console.log(".");
-            } else {
-                console.log("can't figure out which touch to continue");
-            }
-        }
-    }
-
-    function handleEnd(evt) {
-        evt.preventDefault();
-        log("touchend");
-        var touches = evt.changedTouches;
-        socket.send("touch end");
-        for (var i = 0; i < touches.length; i++) {
-            var idx = ongoingTouchIndexById(touches[i].identifier);
-
-            if (idx >= 0) {
-                ongoingTouches.splice(idx, 1);  // remove it; we're done
-                socket.send("end touch");
-            } else {
-                console.log("can't figure out which touch to end");
-            }
-        }
-    }
-
-    function handleCancel(evt) {
-        evt.preventDefault();
-        console.log("touchcancel.");
-        var touches = evt.changedTouches;
-        socket.send("touch cancel");
-        for (var i = 0; i < touches.length; i++) {
-            var idx = ongoingTouchIndexById(touches[i].identifier);
-            ongoingTouches.splice(idx, 1);  // remove it; we're done
-            socket.send("touch canceled")
-        }
-    }
-
-    function fixTouchMove( event )
-    {
-        return;
-    }
-
-    // Remove any previous listners as the page content is ajax loaded and body is never destroyed
-    document.body.removeEventListener( "touchstart", fixTouchMove );
-    document.body.addEventListener( "touchstart", fixTouchMove );
-
-    document.addEventListener("DOMContentLoaded", startup);
-
     /*
     *
      */
