@@ -15,9 +15,6 @@ const portWs = CONFIG.PortWs;
 const app = new express;
 const server = http.createServer(app);
 
-
-
-
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(logger("short"))
