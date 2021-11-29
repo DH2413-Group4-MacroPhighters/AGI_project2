@@ -1,9 +1,10 @@
 const express = require('express');
 const http = require('http');
-const multer  = require('multer')
+
 const logger = require("morgan")
 const path = require("path");
 const socketHandler = require("./socketHandler.js");
+const postHandler = require("./postHandler.js");
 
 const CONFIG = require('../config.json');
 const port = process.env.PORT || parseInt(CONFIG.PortServer);
@@ -15,10 +16,6 @@ const app = new express;
 const server = http.createServer(app);
 
 
-const upload = multer({
-    dest:path.join(__dirname,  '..',  'frontEnd',  'uploads')
-
-})
 
 
 app.engine('html', require('ejs').renderFile);
@@ -30,20 +27,8 @@ app.get('/', (req, res) => {
 app.use(express.static(path.join(__dirname, '..', 'frontEnd'))); // This sends all static files in fr
 // ontEnd upon request
 
-const formidable = require ( 'formidable' );
-const incomingForm = formidable.IncomingForm;
 
-app.post ( '/mapPost', function ( req, res ) {
-    let form = new incomingForm ();
-    form.uploadDir = path.join(__dirname,  '..',  'frontEnd',  'uploads'); // This is the directory you have to create manually.
-    form.parse ( req, function ( err, fields, files ) {
-        if ( err ) {
-            console.log ( 'Some error: ', err );
-        }
-        console.log ( 'File saved' );
-    } );
-});
-
+postHandler.Start(app);
 socketHandler.Start(port)
 
 server.listen(port, () => {

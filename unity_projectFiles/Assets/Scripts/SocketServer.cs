@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Serialization;
 using WebSocketSharp;
 
 public class SocketServer : MonoBehaviour
@@ -10,7 +11,7 @@ public class SocketServer : MonoBehaviour
     WebSocket ws;
     public GameObject tree;
     public GameObject scenePart;
-    
+    public Camera mapCamera;
 
     private long placeX;
 
@@ -28,9 +29,8 @@ public class SocketServer : MonoBehaviour
                 DATA data = readDATA(e.Data);
                 handleData(data);
             };
-            
-            CaptureImg();
-            StartCoroutine(ImageSender.SendImageToServer("http://" + config.HostIP + ":" + config.PortServer+"/mapPost"));
+
+            CaptureAndSendMap(config, mapCamera);
         }
         private void Update()
         {
@@ -79,9 +79,10 @@ public class SocketServer : MonoBehaviour
             return config;
         }
 
-        private void CaptureImg()
+        private void CaptureAndSendMap(CONFIG config, Camera c)
         {
-            ScreenCapture.CaptureScreenshot(Application.dataPath + "/Images/map.png");
+            StartCoroutine(ImageSender.SendImageToServer("http://" + config.HostIP + ":" + config.PortServer+"/mapPost", c));
+            c.enabled = false;
         }
 }
 
