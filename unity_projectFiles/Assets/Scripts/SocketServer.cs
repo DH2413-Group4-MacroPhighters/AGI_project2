@@ -42,6 +42,7 @@ public class SocketServer : MonoBehaviour
             }  
         }
 
+        //gets coordinates and sets placeFlag to true.
         private void handleData(DATA data) {
             if (data.type == "touchstart") {
                 placeX = data.x;
@@ -50,11 +51,11 @@ public class SocketServer : MonoBehaviour
             }
         }
 
+        //called if placeFlag is true. Places tree in correct spot in the world.
         private void PlaceObject()
         {
             Debug.Log("place object");
-            Vector3 position = scenePart.transform.Find("Middle").transform.position;
-            position = position + new Vector3(-placeX/10, 0, placeZ/10);
+            Vector3 position = new Vector3(-placeX, 18.1f, -placeZ);
             Quaternion rotation = scenePart.transform.rotation;
             Instantiate(tree, position, rotation);
             placeFlag = false;
@@ -89,7 +90,6 @@ public class DATA
     public string type;
     public long x;
     public long y;
-    public int touchID;
 }
 
 
