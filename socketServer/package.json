@@ -19,6 +19,9 @@
     "ws": "^8.2.3"
   },
   "devDependencies": {
+    "formidable": "^2.0.1",
+    "multer": "^1.4.3",
+    "request": "^2.88.2",
     "socket.io": "^4.3.2"
   }
 }
