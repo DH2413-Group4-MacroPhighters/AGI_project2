@@ -10,6 +10,7 @@ public class SocketServer : MonoBehaviour
 {
     WebSocket ws;
     public GameObject tree;
+    private GameObject objectToPlace;
     public GameObject scenePart;
     public Camera mapCamera;
 
@@ -48,11 +49,12 @@ public class SocketServer : MonoBehaviour
 
         //gets coordinates and sets placeFlag to true.
         private void handleData(DATA data) {
-            if (data.type == "touchstart") {
-                placeX = data.x;
-                placeZ = data.y;
-                placeFlag = true;
+            if (data.type == "tree") {
+                objectToPlace = tree;
             }
+            placeX = data.x;
+            placeZ = data.y;
+            placeFlag = true;
         }
 
         //called if placeFlag is true. Places tree in correct spot in the world.
@@ -61,7 +63,7 @@ public class SocketServer : MonoBehaviour
             Debug.Log("place object");
             Vector3 position = new Vector3(-placeX, 18.1f, -placeZ);
             Quaternion rotation = scenePart.transform.rotation;
-            Instantiate(tree, position, rotation);
+            Instantiate(objectToPlace, position, rotation);
             placeFlag = false;
         }
 

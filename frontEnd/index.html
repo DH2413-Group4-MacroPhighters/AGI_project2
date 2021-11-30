@@ -73,6 +73,9 @@
     console.log('Host: ' + host + ':' + port);
     const socket = new WebSocket('ws://' + host + ':' + port);
 
+    //objectType should be 
+    var objectType = "tree";
+
     let form = document.getElementById('form');
     let input = document.getElementById('input');
 
@@ -105,19 +108,19 @@
         var lowY = y-4;
         var highY = y+4;
         var imageUrl = '/tree.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        let overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
+        let tree = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
     }
 
     overlay.on('click', function(d) {
         var coord = d.latlng;
         var lng = coord.lng;
         var lat = coord.lat;
-        sendCoords("touchstart", lng, lat);
+        sendCoords(objectType, lng, lat);
     });
 
     //Send the coordinates of spot which was tapped by user
-    function sendCoords(touchtype, x, y) {
-        var data = '{ "type":' + '"' + touchtype + '"' + ', "x":' + x + ', "y":' + y + '}';
+    function sendCoords(objectType, x, y) {
+        var data = '{ "type":' + '"' + objectType + '"' + ', "x":' + x + ', "y":' + y + '}';
         socket.send(data);
     }
     /*
