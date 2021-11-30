@@ -1,7 +1,7 @@
 # Project exclude paths
 /socketServer/node_modules/
 /frontEnd/.DS_Store
-.DS_Store
+/.DS_Store
 unity_projectFiles/.DS_Store
 
 # This .gitignore file should be placed at the root of your Unity project directory
@@ -15,7 +15,7 @@ unity_projectFiles/.DS_Store
 /unity_projectFiles/[Bb]uilds/
 /unity_projectFiles/[Ll]ogs/
 /unity_projectFiles/[Uu]ser[Ss]ettings/
-unity_projectFiles/.vscode/
+/unity_projectFiles/.vscode/
 /unity_projectFiles/ClimateArt.app/
 
 # MemoryCaptures can get excessive in size.
