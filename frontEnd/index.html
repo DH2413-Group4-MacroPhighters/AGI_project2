@@ -60,68 +60,125 @@
 <br>
 <div id="map"></div>
 
-
-<ul id="messages"></ul>
-<form id="form" action="">
-    <!---<input id="input" autocomplete="off" />
-    <button>Send</button>--->
-</form>
-
 <script >
     var host = "<%= host %>";
     var port = "<%= port %>";
     console.log('Host: ' + host + ':' + port);
     const socket = new WebSocket('ws://' + host + ':' + port);
+    socket.onopen = function(event) {
+        socket.send('new-client');
+    };
 
-    //objectType should be 
+    //objectType should be set by chosing object in a list
     var objectType = "tree";
-
-    let form = document.getElementById('form');
-    let input = document.getElementById('input');
+    //List of object-images placed on the map
+    var overlays = [];
+    //The state holds the ID of the latest placed object, and a json string with all IDs and placements of objects.
+    var state = '{"newID":"" , "objects":{}}';
+    //placed_objects holds the IDs and places of all objects currently placed on the client map
+    var placed_objects = '{}';
+    var objects_layer = L.layerGroup([]);
 
     var map = L.map('map').setView([0, 0], 4);
 
     var imageUrl = '/map.png', imageBounds = [[-34,-34.4], [34.3, 36.8]];
     let overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
+    objects_layer.addTo(map);
 
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (input.value) {
-            socket.send(input.value);
-            input.value = '';
+    var clientName = "placeHolder";
+
+    //clears the state and removes everything from the map
+    function clearState() {
+        objects_layer.remove();
+        state = '{"newID":"" , "objects":{}}';
+        placed_objects = '{}';
+        overlays = [];
+        objects_layer = L.layerGroup([]);
+        objects_layer.addTo(map);
+    }
+
+    //updates state and adds anything new to the map
+    function update_state(message) {
+        state = message;
+        const json = JSON.parse(state);
+        const new_objects = json.objects;
+        const old_objects = JSON.parse(placed_objects);
+        objects_layer.remove();
+        for (var ID in new_objects) {
+            if (new_objects.hasOwnProperty(ID) && !old_objects.hasOwnProperty(ID)) {
+                switch(new_objects[ID].type) {
+                    case "tree":
+                        drawTree(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        break;
+                    default: throw 'objectType does not exist';
+                }
+                old_objects[ID] = new_objects[ID];
+            }
         }
-    });
-
+        placed_objects = JSON.stringify(old_objects);
+        objects_layer = L.layerGroup(overlays);
+        objects_layer.addTo(map);
+    }
 
     //Handles data sent from the server (for now only drawing tree image in the right spot)
     socket.onmessage = (event)=>{
-        console.log(event)
-        console.log(event.data)
-        const json = JSON.parse(event.data);
-        drawTree(json.x, json.y);
+        console.log(event);
+        var message = event.data;
+        console.log(message);
+        switch(message) {
+            case "clear":
+                clearState();
+                break;
+            case "new-client":
+                console.log("new_client");
+                break;
+            default: update_state(message);
+        }
     }
 
     //Loading the tree image and draws it with (x,y) as center.
-    function drawTree(x, y) {
+    function drawTree(x, y, clientName) {
         var lowX = x-4;
         var highX = x+4;
         var lowY = y-4;
         var highY = y+4;
         var imageUrl = '/tree.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        let tree = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
+        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Tree added by: ' + clientName);
+        overlays.push(overlay);
+    }
+
+    //generates random id;
+    let guid = () => {
+        let s4 = () => {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        //return id of format 'aaaaaaaa'-'aaaa'-'aaaa'-'aaaa'-'aaaaaaaaaaaa'
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
     }
 
     overlay.on('click', function(d) {
         var coord = d.latlng;
         var lng = coord.lng;
         var lat = coord.lat;
-        sendCoords(objectType, lng, lat);
+        var ID = guid();
+        sendCoords(objectType, lng, lat, ID, clientName);
     });
 
     //Send the coordinates of spot which was tapped by user
-    function sendCoords(objectType, x, y) {
-        var data = '{ "type":' + '"' + objectType + '"' + ', "x":' + x + ', "y":' + y + '}';
-        socket.send(data);
+    function sendCoords(objectType, x, y, ID, clientName) {
+        const stateJson = JSON.parse(state);
+        var data = "{}";
+        const dataJson = JSON.parse(data);
+        dataJson.type = objectType;
+        dataJson.x = x;
+        dataJson.y = y;
+        dataJson.clientName = clientName;
+        stateJson.objects[ID] = dataJson;
+        stateJson.newID = ID;
+        var new_state = JSON.stringify(stateJson);
+        socket.send(new_state);
     }
     /*
     *
