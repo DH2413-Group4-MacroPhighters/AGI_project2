@@ -69,7 +69,7 @@ Material:
     - _Cutoff: 0.5
     - _DeapthExpV: 2
     - _DeapthStrength: 50
-    - _DepthExpV: 0.03
+    - _DepthExpV: 0.0131
     - _DepthStrength: 50
     - _DetailNormalMapScale: 1
     - _DiffusePart: 1
