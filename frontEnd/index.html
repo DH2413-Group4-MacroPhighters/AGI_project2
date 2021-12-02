@@ -79,10 +79,10 @@
     var placed_objects = '{}';
     var objects_layer = L.layerGroup([]);
 
-    var map = L.map('map').setView([0, 0], 4);
+    var map = L.map('map', {crs: L.CRS.Simple}).setView([0, 0], 2);
     map.setMaxBounds(map.getBounds());
 
-    var imageUrl = '/map.png', imageBounds = [[-34,-34.8], [34.3, 37.3]];
+    var imageUrl = '/map.png', imageBounds = [[-111,-111], [111, 111]];
     let overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
     objects_layer.addTo(map);
 

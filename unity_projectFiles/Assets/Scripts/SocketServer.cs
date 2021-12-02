@@ -84,7 +84,7 @@ public class SocketServer : MonoBehaviour
         {
             Debug.Log("place object");
             placeFlag = false;
-            Vector3 position = new Vector3(-placeX, 18.1f, -placeZ);
+            Vector3 position = new Vector3(-placeX, 65.1f, -placeZ);
             Quaternion rotation = scenePart.transform.rotation;
             GameObject new_object = Instantiate(objectToPlace, position, rotation);
             new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + clientName;
