@@ -101,7 +101,7 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaveAmp: 2
+    - _WaveAmp: 1
     - _WaveFreq: 0.5
     - _WaveSpeed: 4
     - _ZWrite: 1
