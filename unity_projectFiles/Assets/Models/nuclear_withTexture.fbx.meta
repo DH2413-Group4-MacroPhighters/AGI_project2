@@ -1,49 +1,14 @@
 fileFormatVersion: 2
-guid: f35478d54c71f4991b0b9bbf27b5fe1c
+guid: e31b83ae8aa1341b18c1948744b3e093
 ModelImporter:
   serializedVersion: 20200
-  internalIDToNameTable:
-  - first:
-      74: -3036527314473485615
-    second: Sphere.001|Sphere.001Action
-  - first:
-      74: -7184219098001898971
-    second: Sphere.001|Sphere.001Action.001
-  - first:
-      74: -8929536445494971869
-    second: Cube|Cube.002Action
-  - first:
-      74: -2176153435741613755
-    second: Cube|Cube.002Action.002
-  - first:
-      74: -1886024049379352917
-    second: Cube|CylinderAction.001
-  - first:
-      74: 5135945932437893213
-    second: Cube|Empty.001Action
-  - first:
-      74: 6712369695479197947
-    second: Cube.002|Cube.002Action
-  - first:
-      74: -4833072498873103390
-    second: Cube.002|Cube.002Action.002
-  - first:
-      74: 6104333808158994455
-    second: Cube.002|CylinderAction.001
-  - first:
-      74: 8110301304244473527
-    second: Cube.002|Empty.001Action
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Material
-    second: {fileID: 2100000, guid: d170aaa40e5984562b9dfca183637932, type: 2}
+  internalIDToNameTable: []
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
     materialSearch: 1
-    materialLocation: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
@@ -56,49 +21,20 @@ ModelImporter:
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
-    importAnimatedCustomProperties: 1
-    importConstraints: 1
-    animationCompression: 3
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Cube.002|Cube.002Action
-      takeName: Cube.002|Cube.002Action
-      internalID: 0
-      firstFrame: 0
-      lastFrame: 120
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 2
+    globalScale: 4
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -149,8 +85,8 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 2
-    rootMotionBoneName: Cube.002
+    globalScale: 0.04
+    rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
@@ -158,7 +94,7 @@ ModelImporter:
   autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 0
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   additionalBone: 0
   userData: 
