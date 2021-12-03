@@ -80,7 +80,6 @@ Shader "Unlit/electricShader"
 
                     return _CableColor;
                 }
-                const float a = 2;
                 
                 const float timeValue = (_Time.y - (cos(_Time.y*5)+1)/2 + 0.2)*_Speed;
                 
