@@ -3,64 +3,125 @@
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin="" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/> -->
+
     <title>Climate_ART</title>
-    <style>
-        body {
-            margin: 0;
-            padding-bottom: 3rem;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-        #form {
-            background: rgba(0, 0, 0, 0.15);
-            padding: 0.25rem;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            height: 3rem;
-            box-sizing: border-box;
-            backdrop-filter: blur(10px);
-        }
-        #input{border: none;
-            padding: 0 1rem;
-            flex-grow: 1;
-            border-radius: 2rem;
-            margin: 0.25rem;
-        }
-        #input:focus {
-            outline: none;
-        }
-        #form > button{
-            background: #333;
-            border: none;
-            padding: 0 1rem;
-            margin: 0.25rem;
-            border-radius: 3px;
-            outline: none;
-            color: #fff;
-        }
-        messages {
-            list-style-type: none;
-            margin: 0;
-            padding: 0; }
-        #messages > li {
-            padding: 0.5rem 1rem;
-        }
-        #messages > li:nth-child(odd) {
-            background: #efefef;
-        }
-        #map { 
-            height: 900px;
-        }
-    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+
+    <link rel="stylesheet" href="index.css"/>
 </head>
 <body>
-<p style="font-size:32px;"><strong>Tap a place on the map to add a tree!</strong></p>
-<br>
+    <p class="info__logo" onClick='showInfoBox()'>
+        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+      </svg>
+    </p>
+    <h1>Climate_ART</h1>
+
 <div id="map"></div>
 
+<div class="tabbar tabbar--top tabbar--material">
+    <label class="tabbar__item tabbar--material__item">
+      <input type="radio" name="tabbar-material-a" checked="checked">
+      <button class="tabbar__button tabbar--material__button">
+        Power plants
+      </button>
+    </label>
+  
+    <label class="tabbar__item tabbar--material__item">
+      <input type="radio" name="tabbar-material-a">
+      <button class="tabbar__button tabbar--material__button">
+        Nature
+      </button>
+    </label>
+  
+    <label class="tabbar__item tabbar--material__item">
+      <input type="radio" name="tabbar-material-a">
+      <button class="tabbar__button tabbar--material__button">
+        Other
+      </button>
+    </label>
+  </div>
+
+<template id="infobox">
+    <ons-alert-dialog id="info-dialog" modifier="rowfooter">
+        <div class="alert-dialog-title">Information</div>
+        <div class="alert-dialog-content">
+            <hr/> 
+            <b>How to use</b>
+            <br></br>
+            Choose an object from the panel at the bottom. You can choose from different categories.
+            <br></br>
+            Place the object on the map and see your object being placed in the big world on the larger screen
+            <br></br>
+
+            <b>More info</b>
+            <br></br>
+            <a href="https://dh2413-group4-macrophighters.github.io/Climate-Project-Web/">Visit our project web</a>
+            <br></br>
+        </div>
+        <div class="alert-dialog-footer">
+            <ons-alert-dialog-button onclick="hideInfoBox()">OK</ons-alert-dialog-button>
+        </div>
+    </ons-alert-dialog>
+</template>
+
+<template id="start_popup">
+    <ons-alert-dialog id="start-dialog" modifier="rowfooter">
+        <div class="alert-dialog-title">Hello there! 👋</div>
+        <div class="alert-dialog-content">
+            You are about to enter Climate_ART. But before we start we would like to know who you are.
+            <br></br>
+            <ons-input id="alias" modifier="underbar" placeholder="Enter an alias" float></ons-input>
+        </div>
+        <div class="alert-dialog-footer">
+            <ons-alert-dialog-button onclick="hideStartPopup()">OK</ons-alert-dialog-button>
+        </div>
+    </ons-alert-dialog>
+</template>
+
 <script >
+
+    // create infobox
+    var showInfoBox = function() {
+        ons.createElement('infobox', {append: true})
+        .then(function(dialog) {
+            dialog.show();
+        })
+    }
+
+    // hide infobox
+    var hideInfoBox = function() {
+        document
+        .getElementById('info-dialog')
+        .hide();
+    }
+
+    // creates the start pop-up
+    ons
+        .createElement('start_popup', { append: true })
+        .then(function(dialog) {
+            dialog.show();
+        });
+
+    // close the start pop-up if an alias have been given
+    var hideStartPopup = function() {
+        var alias = document.getElementById('alias').value;
+
+        if (alias!='') {
+            document
+            .getElementById('start-dialog')
+            .hide();
+            }
+        else {
+            ons.notification.alert('Enter an alias');
+        }
+    };
+
     var host = "<%= host %>";
     var port = "<%= port %>";
     console.log('Host: ' + host + ':' + port);
@@ -186,5 +247,8 @@
      */
 </script>
 
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
 </html>
