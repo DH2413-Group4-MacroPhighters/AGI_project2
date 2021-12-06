@@ -3,7 +3,6 @@ Shader "Unlit/waveShader"
     Properties
     {
         // THis is valus that is set by the user, The material settings.
-        _MainTex ("Texture", 2D) = "white" {}
         _Color ("TestColor", Color) = (1,1,1,1)
         
         _WaveAmp ("Wave Amplitude", Float) = 0.1
@@ -73,20 +72,23 @@ Shader "Unlit/waveShader"
             {
                 Interpolator o;
                 
-
-                
-                const float ofsetNormal = (length(v.normal - float3(0,1,0)) < _NormalUpThreashold);
-                float wave = _WaveAmp*cos(_WaveFreq*(v.vertex.x + _Time.y*_WaveSpeed));
-                wave*=  _WaveAmp*cos(_WaveFreq*(v.vertex.z + _Time.y*_WaveSpeed));
-                
-                v.vertex.y += ofsetNormal*(wave);
-
-
-                
-                o.vertex = UnityObjectToClipPos(v.vertex);
                 o.normals = UnityObjectToWorldNormal(v.normal);
+                const float offsetNormal = length(o.normals - float3(0,1,0)) < _NormalUpThreashold;
+
+                // We go to WorldCoordinates
+                v.vertex =  mul(unity_ObjectToWorld, v.vertex);
+
+                // Calculated Wave factor
+                float wave = cos(_WaveFreq*(v.vertex.z + _Time.y*_WaveSpeed));
+                wave *= cos(_WaveFreq*(v.vertex.x + _Time.y*_WaveSpeed));
+
+                // Add the offset with the normals
+                v.vertex.xyz += o.normals*offsetNormal*(wave*_WaveAmp);
+               
+                o.worldPos = v.vertex;
+                o.vertex = UnityObjectToClipPos(mul(unity_WorldToObject, v.vertex));
                 o.uv = v.uv;
-                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                
                 return o;
             } 
 
@@ -100,7 +102,7 @@ Shader "Unlit/waveShader"
 
                 float3 ddxPos = ddx(i.worldPos);
                 float3 ddyPos = ddy(i.worldPos)  * _ProjectionParams.x;
-                float3 normal = normalize( cross(ddxPos, ddyPos));
+                float3 normal = normalize(cross(ddxPos, ddyPos));
                 
                 float3 N = normal;//normalize(i.normals);
                 float3 L = _WorldSpaceLightPos0.xyz;
@@ -122,7 +124,7 @@ Shader "Unlit/waveShader"
 
                 float alpha = 1 - exp(-_DepthExpV*length(ViewVector));
 
-                c+=spec_light*_LightColor0.xyz;
+                c+=spec_light*_LightColor0.xyz; 
                 return float4(c, alpha);
                 //return _Color;
                 //return float4(0,i.vertex.xy,1);
