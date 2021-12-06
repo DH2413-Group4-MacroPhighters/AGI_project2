@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: waterMaterial
-  m_Shader: {fileID: 4800000, guid: 382ee1dcf028b4cfda503ec81a163dae, type: 3}
+  m_Shader: {fileID: 4800000, guid: d02304b347ded8843b0cb4352b6611e6, type: 3}
   m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
@@ -60,6 +60,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - _AmbientLighting: 0.22
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0
@@ -69,7 +70,7 @@ Material:
     - _Cutoff: 0.5
     - _DeapthExpV: 2
     - _DeapthStrength: 50
-    - _DepthExpV: 0.03
+    - _DepthExpV: 0.0108
     - _DepthStrength: 50
     - _DetailNormalMapScale: 1
     - _DiffusePart: 1
@@ -82,7 +83,7 @@ Material:
     - _FlipbookMode: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
-    - _Glossy: 0.1
+    - _Glossy: 0.194
     - _GlossyReflections: 1
     - _InflucenceFactor: 1
     - _LightingEnabled: 1
@@ -97,13 +98,13 @@ Material:
     - _SoftParticlesEnabled: 0
     - _SoftParticlesFarFadeDistance: 1
     - _SoftParticlesNearFadeDistance: 0
-    - _SpecPart: 0.55
+    - _SpecPart: 0.748
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaveAmp: 1
+    - _WaveAmp: 2.5
     - _WaveFreq: 0.5
-    - _WaveSpeed: 4
+    - _WaveSpeed: 5.28
     - _ZWrite: 1
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
