@@ -109,8 +109,19 @@ public class SocketServer : MonoBehaviour
 
         private void CaptureAndSendMap(CONFIG config, Camera c)
         {
+            GameObject[] clouds = GameObject.FindGameObjectsWithTag("cloud"); 
+            foreach (GameObject cloud in clouds)
+            {
+                cloud.SetActive(false);
+                        
+            }
             StartCoroutine(ImageSender.SendImageToServer("http://" + config.HostIP + ":" + config.PortServer+"/mapPost", c));
             c.enabled = false;
+            foreach (GameObject cloud in clouds)
+            {
+                cloud.SetActive(true);
+                        
+            }
         }
 }
 
