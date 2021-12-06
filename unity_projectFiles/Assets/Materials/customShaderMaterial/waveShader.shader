@@ -13,6 +13,7 @@ Shader "Unlit/waveShader"
         _Glossy("Glossy", range(0, 1)) = 0.5
         _DiffusePart("Diffuse Strength", range(0, 1)) = 0.5
         _SpecPart("_SpecPart Strength ", range(0, 1)) = 0.5
+        _AmbientLighting("AmbientLighting", range(0,1))= 0.2
         
         _DepthExpV("LightAbsorbtion factor" , range(0,0.1)) = 0.01
         
@@ -48,6 +49,7 @@ Shader "Unlit/waveShader"
             float _Glossy;
             float _DiffusePart;
             float _SpecPart;
+            float _AmbientLighting;
 
             float _DepthStrength;
             float _DepthExpV;
@@ -106,7 +108,9 @@ Shader "Unlit/waveShader"
                 
                 float3 N = normal;//normalize(i.normals);
                 float3 L = _WorldSpaceLightPos0.xyz;
-                
+
+
+                c += _Color*_AmbientLighting;
                 // diffuse
                 const float diffuse_light = saturate(dot(N, L))*_DiffusePart;
                 c += _Color*diffuse_light*_LightColor0.xyz;

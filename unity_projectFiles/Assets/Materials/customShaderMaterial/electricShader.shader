@@ -11,6 +11,9 @@ Shader "Unlit/electricShader"
         _SpikeF("Spike Factor", range(0, 20)) = 10
         _Step("Step Factor" , range(0.001, 0.5)) = 0.1
         
+        _Exp("exponent" , range(0.15, 15)) = 1
+        _F("Constant Speed Factor" , range(1, 15)) = 1
+        
     }
     SubShader
     {
@@ -40,7 +43,9 @@ Shader "Unlit/electricShader"
             float4 _CableColor;
             float4 _ElecStart;
             float4 _ElecPeak;
-            
+
+            float _Exp;
+            float _F;
             
 
             struct MeshData
@@ -80,6 +85,9 @@ Shader "Unlit/electricShader"
 
                     return _CableColor;
                 }
+                
+                 //float timeValue = floor(_Time.y) + pow(_Time.y-floor(_Time.y),_Exp);
+
                 
                 const float timeValue = (_Time.y - (cos(_Time.y*5)+1)/2 + 0.2)*_Speed;
                 
