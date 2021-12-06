@@ -18,6 +18,8 @@ public class SocketServer : MonoBehaviour
 
     private STATE state;
 
+    List<PLACEMENT> placements = new List<PLACEMENT>();
+
     private long placeX;
 
     private long placeZ;
@@ -41,8 +43,9 @@ public class SocketServer : MonoBehaviour
                     case "new-client": break;
                     default: 
                     {
-                        PLACEMENT new_placement = readDATA(e.Data); 
-                        handleData(new_placement);
+                        PLACEMENT new_placement = readDATA(e.Data);
+                        placements.Add(new_placement);
+                        placeFlag = true;
                         break;
                     }
                 }
@@ -53,7 +56,7 @@ public class SocketServer : MonoBehaviour
         private void Update()
         {
             if (placeFlag) {
-                PlaceObject();
+                PlaceObjects();
             }
             if(ws == null)
             {
@@ -64,40 +67,32 @@ public class SocketServer : MonoBehaviour
             }  
         }
 
-        //gets coordinates, object type and sets placeFlag to true.
-        private void handleData(PLACEMENT new_placement) {
-            switch(new_placement.type)
-            {
-                case "tree": 
-                    objectToPlace = tree;
-                    break;
-                default: throw new ArgumentException("ObjectType does not exist");
-            }
-            placeX = new_placement.x;
-            placeZ = new_placement.y;
-            clientName = new_placement.clientName;
-            placeFlag = true;
-        }
-
         //called if placeFlag is true. Places tree in correct spot in the world.
-        private void PlaceObject()
+        private void PlaceObjects()
         {
-            Debug.Log("place object");
+            foreach (PLACEMENT placement in placements) {
+                GameObject objectToPlace;
+                switch(placement.type)
+                {
+                    case "tree": 
+                        objectToPlace = tree;
+                        break;
+                    default: throw new ArgumentException("ObjectType does not exist");
+                }
+                Debug.Log("place object");
+                Vector3 position = new Vector3(-placement.x, 65.1f, -placement.y);
+                Quaternion rotation = scenePart.transform.rotation;
+                GameObject new_object = Instantiate(objectToPlace, position, rotation);
+                new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + placement.clientName;
+            }
             placeFlag = false;
-            Vector3 position = new Vector3(-placeX, 18.1f, -placeZ);
-            Quaternion rotation = scenePart.transform.rotation;
-            GameObject new_object = Instantiate(objectToPlace, position, rotation);
-            new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + clientName;
+            placements.Clear();
         }
 
         private PLACEMENT readDATA(string json) {
-            Debug.Log("reading");
             state = JsonConvert.DeserializeObject<STATE>(json);
-            Debug.Log(state);
             string newID = state.newID;
-            Debug.Log(newID);
             Dictionary<string,PLACEMENT> objects = state.objects;
-            Debug.Log("tesst");
             PLACEMENT new_placement = objects[newID];
             return new_placement;
         }
