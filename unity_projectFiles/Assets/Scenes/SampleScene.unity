@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.4454764, g: 0.49514455, b: 0.57407326, a: 1}
+  m_IndirectSpecularColor: {r: 0.44547653, g: 0.49514502, b: 0.5740734, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -490,7 +490,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 7.9316175e+34, y: 6.7094695e+22, z: 1.619932e+25, w: 1.628018e+25}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 1.1e-44}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -832,7 +832,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: -0.048552908, y: -0.94224125, z: 0.27090326, w: -0.19088084}
-  m_LocalPosition: {x: -60.7, y: 115.4, z: 142.7}
+  m_LocalPosition: {x: -67.9, y: 114.4, z: 138.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3206,7 +3206,7 @@ GameObject:
   - component: {fileID: 7244443167326502185}
   m_Layer: 0
   m_Name: cloud2
-  m_TagString: Untagged
+  m_TagString: cloud
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3297,7 +3297,7 @@ GameObject:
   - component: {fileID: 4689749257756870937}
   m_Layer: 0
   m_Name: cloud5
-  m_TagString: Untagged
+  m_TagString: cloud
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3682,7 +3682,7 @@ GameObject:
   - component: {fileID: 3731609451414520233}
   m_Layer: 0
   m_Name: cloud1
-  m_TagString: Untagged
+  m_TagString: cloud
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3708,7 +3708,7 @@ GameObject:
   - component: {fileID: 3539846359501510454}
   m_Layer: 0
   m_Name: cloud4
-  m_TagString: Untagged
+  m_TagString: cloud
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3748,7 +3748,7 @@ GameObject:
   - component: {fileID: 4351907729215503681}
   m_Layer: 0
   m_Name: cloud3
-  m_TagString: Untagged
+  m_TagString: cloud
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
