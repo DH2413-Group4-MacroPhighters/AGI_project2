@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: waterMaterial
+  m_Name: smallwater
   m_Shader: {fileID: 4800000, guid: d02304b347ded8843b0cb4352b6611e6, type: 3}
-  m_ShaderKeywords: _EMISSION
-  m_LightmapFlags: 0
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
@@ -41,7 +41,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 0, y: 0}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -55,61 +55,33 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
-    - _SpecGlossMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AmbientLighting: 0.22
-    - _BlendOp: 0
+    - _AmbientLighting: 0.2
     - _BumpScale: 1
-    - _CameraFadingEnabled: 0
-    - _CameraFarFadeDistance: 2
-    - _CameraNearFadeDistance: 1
-    - _Cull: 2
     - _Cutoff: 0.5
-    - _DeapthExpV: 2
-    - _DeapthStrength: 50
-    - _DepthExpV: 0.0108
-    - _DepthStrength: 50
+    - _DepthExpV: 0.01
     - _DetailNormalMapScale: 1
-    - _DiffusePart: 1
-    - _DistortionBlend: 0.5
-    - _DistortionEnabled: 0
-    - _DistortionStrength: 1
-    - _DistortionStrengthScaled: 0
+    - _DiffusePart: 0.5
     - _DstBlend: 0
-    - _EmissionEnabled: 0
-    - _FlipbookMode: 0
     - _GlossMapScale: 1
     - _Glossiness: 0.5
-    - _Glossy: 0.194
+    - _Glossy: 0.5
     - _GlossyReflections: 1
-    - _InflucenceFactor: 1
-    - _LightingEnabled: 1
-    - _MaskAmp: 0
-    - _MaskSpeed: 0
     - _Metallic: 0
     - _Mode: 0
-    - _NormalUpThreashold: 0.339
+    - _NormalUpThreashold: 0.8
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
-    - _SoftParticlesEnabled: 0
-    - _SoftParticlesFarFadeDistance: 1
-    - _SoftParticlesNearFadeDistance: 0
-    - _SpecPart: 0.748
+    - _SpecPart: 0.5
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaveAmp: 2
-    - _WaveFreq: 0.5
-    - _WaveSpeed: 5.28
+    - _WaveAmp: 2.71
+    - _WaveFreq: 2
+    - _WaveSpeed: 0.5
     - _ZWrite: 1
     m_Colors:
-    - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0, g: 0.41550738, b: 0.6981132, a: 1}
+    - _Color: {r: 0.11792451, g: 0.67949164, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
-    - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
