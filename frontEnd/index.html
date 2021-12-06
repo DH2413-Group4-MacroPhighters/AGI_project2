@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="index.css"/>
 </head>
 <body>
-    <p class="info__logo">
+    <p class="info__logo" onClick='showInfoBox()'>
         <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
         <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
@@ -24,21 +24,59 @@
 
 <div id="map"></div>
 
+<template id="infobox">
+    <ons-alert-dialog id="info-dialog" modifier="rowfooter">
+        <div class="alert-dialog-title">Information</div>
+        <div class="alert-dialog-content">
+            <hr/> 
+            <b>How to use</b>
+            <br></br>
+            Choose an object from the panel at the bottom. You can choose from different categories.
+            <br></br>
+            Place the object on the map and see your object being placed in the big world on the larger screen
+            <br></br>
+
+            <b>More info</b>
+            <br></br>
+            <a href="https://dh2413-group4-macrophighters.github.io/Climate-Project-Web/">Visit our project web</a>
+            <br></br>
+        </div>
+        <div class="alert-dialog-footer">
+            <ons-alert-dialog-button onclick="hideInfoBox()">OK</ons-alert-dialog-button>
+        </div>
+    </ons-alert-dialog>
+</template>
+
 <template id="start_popup">
-<ons-alert-dialog id="start-dialog" modifier="rowfooter">
-    <div class="alert-dialog-title">Hello there! 👋</div>
-    <div class="alert-dialog-content">
-        You are about to enter Climate_ART. But before we start we would like to know who you are.
-        <br></br>
-        <ons-input id="alias" modifier="underbar" placeholder="Enter an alias" float></ons-input>
-    </div>
-    <div class="alert-dialog-footer">
-      <ons-alert-dialog-button onclick="hideAlertDialog()">OK</ons-alert-dialog-button>
-    </div>
-  </ons-alert-dialog>
+    <ons-alert-dialog id="start-dialog" modifier="rowfooter">
+        <div class="alert-dialog-title">Hello there! 👋</div>
+        <div class="alert-dialog-content">
+            You are about to enter Climate_ART. But before we start we would like to know who you are.
+            <br></br>
+            <ons-input id="alias" modifier="underbar" placeholder="Enter an alias" float></ons-input>
+        </div>
+        <div class="alert-dialog-footer">
+            <ons-alert-dialog-button onclick="hideStartPopup()">OK</ons-alert-dialog-button>
+        </div>
+    </ons-alert-dialog>
 </template>
 
 <script >
+
+    // create infobox
+    var showInfoBox = function() {
+        ons.createElement('infobox', {append: true})
+        .then(function(dialog) {
+            dialog.show();
+        })
+    }
+
+    // hide infobox
+    var hideInfoBox = function() {
+        document
+        .getElementById('info-dialog')
+        .hide();
+    }
 
     // creates the start pop-up
     ons
@@ -48,7 +86,7 @@
         });
 
     // close the start pop-up if an alias have been given
-    var hideAlertDialog = function() {
+    var hideStartPopup = function() {
         var alias = document.getElementById('alias').value;
 
         if (alias!='') {
