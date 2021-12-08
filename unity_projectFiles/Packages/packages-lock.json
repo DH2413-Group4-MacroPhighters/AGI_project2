@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.nol1fe.delaunator": {
+      "version": "https://github.com/nol1fe/delaunator-sharp.git?path=DelaunatorSharp.Unity",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f9e28833b4369a73cc2dcc50ce9ebee99b6227f2"
+    },
     "com.unity.collab-proxy": {
       "version": "1.13.5",
       "depth": 0,

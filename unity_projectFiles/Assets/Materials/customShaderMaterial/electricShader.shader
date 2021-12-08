@@ -89,11 +89,11 @@ Shader "Unlit/electricShader"
                  //float timeValue = floor(_Time.y) + pow(_Time.y-floor(_Time.y),_Exp);
 
                 
-                const float timeValue = (_Time.y - (cos(_Time.y*5)+1)/2 + 0.2)*_Speed;
+                const float timeValue = (_Time.y - (cos(_Time.y*5)+1)/2 + 0.25)*_Speed;
                 
                 //const float timeValue = exp(a*frac(_Time.y))/exp(a) + floor(_Time.y) + 0.2;
                    
-                float wave = (sin((i.uv.y+timeValue)*_Freq) + 1)/2;
+                float wave = (sin((i.uv.x+timeValue)*_Freq) + 1)/2;
 
                 
                 wave = pow(wave, _SpikeF);
