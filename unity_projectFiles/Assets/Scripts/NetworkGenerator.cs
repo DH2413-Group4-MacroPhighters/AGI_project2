@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DelaunatorSharp;
 using UnityEngine;
 using DelaunatorSharp.Unity.Extensions;
@@ -40,38 +41,55 @@ namespace DefaultNamespace
 
             List<IPoint> iPoints = new List<IPoint>();
             Dictionary<IPoint, Vector3> pointMemory = new Dictionary<IPoint, Vector3>();
+            Dictionary<IPoint, int> pointToIndex = new Dictionary<IPoint, int>();
 
+
+            int pointIndex = 0; 
             foreach (GameObject pointObj in _pointsObjects)
             {
                 var position = pointObj.transform.position;
                 float x = position.x;
                 float y = position.z;
                 IPoint newPoint = new Point(x, y);
+                
                 iPoints.Add(newPoint);
                 pointMemory.Add(newPoint, position);
+                pointToIndex.Add(newPoint, pointIndex);
+                
+                pointIndex++;
             }
 
             ClearNetworkRender();
-            DrawNetwork(iPoints, pointMemory);
+            DrawNetwork(iPoints, pointMemory, pointToIndex, iPoints);
 
         }
 
-        private void DrawNetwork(List<IPoint> points, Dictionary<IPoint, Vector3> pMemory)
+        private void DrawNetwork(List<IPoint> points, Dictionary<IPoint, Vector3> pMemory,
+            Dictionary<IPoint, int> pointToIndex, List<IPoint> iPoints)
         {
             Delaunator delNet = new Delaunator(points.ToArray());
             int nPoints = points.Count;
-            int nEdges = 0;
-            int[][] edges = new int[][]{};
+            List<int[]> edges = new List<int[]>();
             
             delNet.ForEachTriangleEdge(edge =>
             {
-                
-                edges[nEdges] = new[] {0, 0, Mathf.RoundToInt((edge.P.ToVector2() - edge.Q.ToVector2()).magnitude)};
-                nEdges++;
-                
+
+                int pIndex = pointToIndex[edge.P];
+                int qIndex = pointToIndex[edge.Q];
+                edges.Add(new[] {pIndex, qIndex, Mathf.RoundToInt((edge.P.ToVector2() - edge.Q.ToVector2()).magnitude)});
+
                 //CreateLine(new[] {pMemory[edge.P], pMemory[edge.Q]}, 0.25f, 1);
             });
-            new MST(edges, nPoints, nEdges);
+            
+            int[][] edgesToRender = MST.GenerateMst(edges.ToArray(), nPoints, edges.Count);
+
+            foreach (int[] edge in edgesToRender)
+            {
+                IPoint P = iPoints[edge[0]];
+                IPoint Q = iPoints[edge[1]];
+                
+                CreateLine(new []{pMemory[P], pMemory[Q]}, 0.2f, 1);
+            }
         }
 
         private void CreateLine(Vector3[] points, float width, int order = 1)
@@ -108,14 +126,16 @@ namespace DefaultNamespace
         }
     }
     
-    public class MST
+    public static class MST
     {
-        public int[][] MstFinal;
-        public MST(int[][] edges, int n, int m)
+        public static int[][] GenerateMst(int[][] edges, int n, int m)
         {
             DisjointSet trees = new DisjointSet(n);
-            int[][] mst = new int[n][];
-            
+            int[][] mst = new int[n-1][];
+            for (int j = 0; j < mst.GetLength(0); j++)
+            {
+                mst[j] = new int [2];
+            }
             Array.Sort<int[]>(edges,(x,y)  =>  x[2]-y[2]);  // sort on weight
            
             int v1;
@@ -127,10 +147,10 @@ namespace DefaultNamespace
             {
                 v1 = trees.find_item(edge[0]);
                 v2 = trees.find_item(edge[1]);
-                if (!(v1 == (v2))){
+                if (v1 != v2){
                     trees.Union(v1, v2);
                     mst[i][0] = Math.Min(edge[0],edge[1]);
-                    mst[i][1] = Math.Min(edge[0],edge[1]);
+                    mst[i][1] = Math.Max(edge[0],edge[1]);
                     i++;
                 }
                 if(i == n-1){
@@ -142,15 +162,11 @@ namespace DefaultNamespace
             {
                 Array.Sort<int[]>(mst, (x, y) => x[0] == y[0] ? x[1] - y[1] : x[0] - y[0]);
 
-                foreach (var e in mst)
-                {
-                    Console.WriteLine(e[0] + " " + e[1]);
-                }
-                MstFinal = mst;
+                return mst;
             }
             else {
                 
-                Console.WriteLine("Impossible");
+                return new int[][]{};
             }
         }
     }
