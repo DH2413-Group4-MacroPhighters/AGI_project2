@@ -31,12 +31,29 @@ public class barchart : MonoBehaviour
         */
     }
 
+    public void showBar()
+    {
+
+    }
     // Update is called once per frame
     void Update()
     {
         
     }
 
+
+    private GameObject CreateBar(Vector2 graphPosition, float barWidth)
+    {
+        GameObject gameObject = new GameObject("bar", typeof(Image));
+        gameObject.transform.SetParent(graphContainer, false);
+        //gameObject.GetComponent<Image>().sprite = circleSprite;
+        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+        rectTransform.anchoredPosition = graphPosition;
+        rectTransform.sizeDelta = new Vector2(11, 22);
+        rectTransform.anchorMin = new Vector2(0, 0);
+        rectTransform.anchorMax = new Vector2(0, 0);
+        return gameObject;
+    }
 
     // change size of renewable bar to half size of graphContainer
     // Change size of other bar to other half of graphcontainer

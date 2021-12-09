@@ -13,6 +13,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using CodeMonkey.Utils;
@@ -26,6 +27,7 @@ public class Window_Graph : MonoBehaviour {
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
+    private List<GameObject> gameObjectListBar;
 
     private void Awake() {
         graphContainer = transform.Find("graphContainer").GetComponent<RectTransform>();
@@ -35,17 +37,32 @@ public class Window_Graph : MonoBehaviour {
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
 
         gameObjectList = new List<GameObject>();
+        gameObjectListBar = new List<GameObject>();
 
         List<int> valueList = new List<int>() { 5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37, 40, 36, 33 };
-        ShowGraph(valueList, (int _i) => "Day " + (_i + 1) + "\n Hr " +((_i + 1) % 24), (float _f) => "$" + Mathf.RoundToInt(_f));
+        List<int> energySourcesList = new List<int>() { 1, 2 };
+        ShowGraph(valueList, (int _i) => "Day " + (_i + 1) + "\n Hr " + ((_i + 1) % 24), (float _f) => "CO2 " + Mathf.RoundToInt(_f));
+        CreateBar(energySourcesList, new Vector2(0f, -60f), 816f);
 
-        /*FunctionPeriodic.Create(() => {
+        FunctionPeriodic.Create(() => {
             valueList.Clear();
             for (int i = 0; i < 15; i++) {
                 valueList.Add(UnityEngine.Random.Range(0, 500));
             }
-            ShowGraph(valueList, (int _i) => "Day " + (_i + 1), (float _f) => "$" + Mathf.RoundToInt(_f));
-        }, .5f);*/
+            ShowGraph(valueList, (int _i) => "Day " + (_i + 1), (float _f) => "CO2 " + Mathf.RoundToInt(_f));
+        }, 1f);
+
+        FunctionPeriodic.Create(() => {
+            int sources = energySourcesList.Count;
+            energySourcesList.Clear();
+            for (int i = 0; i < sources; i++) {
+                energySourcesList.Add(UnityEngine.Random.Range(0, 500));
+            }
+            CreateBar(energySourcesList, new Vector2(0f, -60f), 816f );
+        }, 1f);
+        
+
+
     }
 
     private void ShowGraph(List<int> valueList, Func<int, string> getAxisLabelX = null, Func<float, string> getAxisLabelY = null) {
@@ -82,7 +99,7 @@ public class Window_Graph : MonoBehaviour {
 
         GameObject lastCircleGameObject = null;
 
-        CreateBar(new Vector2(0f, -60f), 816f);
+        
 
         for (int i = 0; i < valueList.Count; i++) {
             float xPosition = xSize + i * xSize;
@@ -154,17 +171,56 @@ public class Window_Graph : MonoBehaviour {
         return gameObject;
     }
 
-    private GameObject CreateBar(Vector2 graphPosition, float barWidth)
-    {
-        GameObject gameObject = new GameObject("bar", typeof(Image));
-        gameObject.transform.SetParent(graphContainer, false);
-        //gameObject.GetComponent<Image>().sprite = circleSprite;
-        RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-        rectTransform.anchoredPosition = new Vector2(graphContainer.sizeDelta.x / 2f, graphPosition.y);
-        rectTransform.sizeDelta = new Vector2(barWidth, 20f);
-        rectTransform.anchorMin = new Vector2(0, 0);
-        rectTransform.anchorMax = new Vector2(0, 0);
-        return gameObject;
+    private void CreateBar(List<int> energySourceList, Vector2 graphPosition, float barWidth) {
+        float maxWidth = barWidth;
+        float previousWidth = 0;
+        int sum = energySourceList.Sum();
+        //int sum = energySourceList[0] + energySourceList[1];
+
+        foreach (GameObject gameObject in gameObjectListBar)
+        {
+            Destroy(gameObject);
+        }
+        gameObjectListBar.Clear();
+
+
+        for (int i = 0; i < energySourceList.Count; i++)
+            {
+
+                if ( previousWidth == 0)
+            {
+                GameObject gameObject = new GameObject("bar", typeof(Image));
+                gameObject.transform.SetParent(graphContainer, false);
+                gameObject.GetComponent<Image>().color = new Color32(188, 108, 219, 255);
+                RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+                rectTransform.anchoredPosition = new Vector2(-15f , graphPosition.y);
+                rectTransform.sizeDelta = new Vector2(barWidth * (energySourceList[i] * 1f / sum), 20f);
+                rectTransform.anchorMin = new Vector2(0, 0);
+                rectTransform.anchorMax = new Vector2(0, 0);
+                rectTransform.pivot = new Vector2(0, 1f);
+                //previousWidth = barWidth * (energySourceList[i] * sum);
+                previousWidth = rectTransform.sizeDelta.x;
+                gameObjectListBar.Add(gameObject);
+            }
+            else
+            {
+                GameObject gameObject = new GameObject("bar", typeof(Image));
+                gameObject.transform.SetParent(graphContainer, false);
+                gameObject.GetComponent<Image>().color = new Color32(118, 219, 108, 255);
+                RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
+                //rectTransform.anchoredPosition = new Vector2(graphContainer.sizeDelta.x / 2f, graphPosition.y);
+                rectTransform.anchoredPosition = new Vector2(previousWidth + 2 - 15f, graphPosition.y);
+                rectTransform.sizeDelta = new Vector2(barWidth * (energySourceList[i] * 1f / sum), 20f);
+                rectTransform.anchorMin = new Vector2(0, 0);
+                rectTransform.anchorMax = new Vector2(0, 0);
+                rectTransform.pivot = new Vector2(0, 1f);
+                previousWidth = barWidth * (energySourceList[i] * sum);
+                gameObjectListBar.Add(gameObject);
+            }
+
+        }
+
+
     }
 
 }
