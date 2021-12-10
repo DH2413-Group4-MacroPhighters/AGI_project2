@@ -91,15 +91,13 @@ namespace DefaultNamespace
             float tStamp = Time.time * 1000;
             foreach (int[] edge in edgesToRender)
             {
-                IPoint P = iPoints[edge[0]];
-                IPoint Q = iPoints[edge[1]];
-
-                if (P.X < Q.X)
-                {
+                Vector3 P = pMemory[iPoints[edge[0]]];
+                Vector3 Q = pMemory[iPoints[edge[1]]];
+                if ((this.transform.position - P).magnitude > (this.transform.position - Q).magnitude) {
                     (P, Q) = (Q, P);
                 }
                 
-                CreateLine(new []{pMemory[P], pMemory[Q]}, lineWidth, tStamp, 1);
+                CreateLine(new []{P, Q}, lineWidth, tStamp, 1);
             }
         }
 
