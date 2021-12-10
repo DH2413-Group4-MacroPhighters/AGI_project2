@@ -6,7 +6,7 @@ Shader "Unlit/electricShader"
         _ElecStart ("Electricity Start", Color) = (0.5,0.5,0.5,1)
         _ElecPeak("Electricity Peak", Color) = (0.5,0.5,0.5,1)
         
-        _Freq("Freq", range(0.001, 100) ) = 5
+        _Freq("Freq", range(0.001, 20) ) = 5
         _Speed("Flow Speed" , range(0.001, 2)) = 0.1
         _SpikeF("Spike Factor", range(0, 20)) = 10
         _Step("Step Factor" , range(0.001, 0.5)) = 0.1
@@ -89,22 +89,18 @@ Shader "Unlit/electricShader"
                  //float timeValue = floor(_Time.y) + pow(_Time.y-floor(_Time.y),_Exp);
 
                 
-                const float timeValue = (_Time.y - (cos(_Time.y*5)+1)/2 + 0.35)*_Speed;
+                const float timeValue = (_Time.y - (cos(_Time.y*5)+1)/2 + 0.25)*_Speed;
                 
                 //const float timeValue = exp(a*frac(_Time.y))/exp(a) + floor(_Time.y) + 0.2;
                    
                 float wave = (sin((i.uv.x+timeValue)*_Freq) + 1)/2;
 
                 
-
-                
                 wave = pow(wave, _SpikeF);
 
                 
                 wave = round(wave/_Step)*_Step; // To make steps in the gradient.
-                
-                //return float4(i.uv.x,0,0,1);
-                
+
                 if(wave>0){
                     wave = (wave-_Step)/(1-_Step);
                     
@@ -118,7 +114,7 @@ Shader "Unlit/electricShader"
                 
                 //return _Color;
                 //return float4(0,i.vertex.xy,1);
-                
+                //return float4(i.uv,0,1);
             }
             ENDCG
         }

@@ -1,12 +1,9 @@
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Serialization;
 using WebSocketSharp;
-using UnityEngine.UI;
 
 public class SocketServer : MonoBehaviour
 {

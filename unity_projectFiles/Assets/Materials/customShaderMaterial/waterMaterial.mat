@@ -70,7 +70,7 @@ Material:
     - _Cutoff: 0.5
     - _DeapthExpV: 2
     - _DeapthStrength: 50
-    - _DepthExpV: 0.0108
+    - _DepthExpV: 0.0387
     - _DepthStrength: 50
     - _DetailNormalMapScale: 1
     - _DiffusePart: 1
@@ -105,7 +105,9 @@ Material:
     - _WaveAmp: 2
     - _WaveFreq: 0.5
     - _WaveSpeed: 5.28
+    - _Z: 83.8
     - _ZWrite: 1
+    - _b: 5
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
     - _Color: {r: 0, g: 0.41550738, b: 0.6981132, a: 1}

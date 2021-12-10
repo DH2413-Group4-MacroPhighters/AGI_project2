@@ -16,6 +16,7 @@ Shader "Unlit/waveShader"
         _AmbientLighting("AmbientLighting", range(0,1))= 0.2
         
         _DepthExpV("LightAbsorbtion factor" , range(0,0.1)) = 0.01
+        _Z("Max Zero Absorbtion point " , range(0, 200)) = 1
         
     }
     SubShader
@@ -51,8 +52,8 @@ Shader "Unlit/waveShader"
             float _SpecPart;
             float _AmbientLighting;
 
-            float _DepthStrength;
             float _DepthExpV;
+            float _Z;
 
             struct MeshData
             {
@@ -126,7 +127,7 @@ Shader "Unlit/waveShader"
                 _Glossy = exp2(_Glossy*8 + 1);
                 spec_light = pow(spec_light, _Glossy);
 
-                float alpha = 1 - exp(-_DepthExpV*length(ViewVector));
+                float alpha = saturate(1 - (1/exp(-_DepthExpV*_Z))*exp(-_DepthExpV*length(ViewVector)));
 
                 c+=spec_light*_LightColor0.xyz; 
                 return float4(c, alpha);
