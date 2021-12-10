@@ -142,6 +142,8 @@ namespace DefaultNamespace
         private void FindPoints()
         {
             _pointsObjects = GameObject.FindGameObjectsWithTag("cPoint");
+            // Should be noted that this is not a good way of finding all the nodes since it take N time. 
+            // In our situation it isn't a problem since we have very few gameObjects
             
         }
     }
