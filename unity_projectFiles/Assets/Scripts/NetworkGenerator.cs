@@ -4,6 +4,7 @@ using System.Linq;
 using DelaunatorSharp;
 using UnityEngine;
 using DelaunatorSharp.Unity.Extensions;
+using UnityEngine.SocialPlatforms;
 
 namespace DefaultNamespace
 {
@@ -11,18 +12,19 @@ namespace DefaultNamespace
     {
         public GameObject lineContainter;
         public Material electricityMaterial;
+        [Range(0.0f, 3.0f)] public float lineWidth = 0.5f;
         private static GameObject[] _pointsObjects;
 
         public void Start()
         {
-            _pointsObjects = GameObject.FindGameObjectsWithTag("cPoint");
-
+            FindPoints();
             ClearNetworkPointChange();
             CreateNetwork();
         }
 
         public void Update()
         {
+            FindPoints();
             foreach (GameObject pointObj in _pointsObjects)
             {
                 if (pointObj.transform.hasChanged)
@@ -38,28 +40,31 @@ namespace DefaultNamespace
         public void CreateNetwork()
         {
             Debug.Log("<color=yellow>Creating Network</color>");
+            ClearNetworkRender();
+            
 
             List<IPoint> iPoints = new List<IPoint>();
             Dictionary<IPoint, Vector3> pointMemory = new Dictionary<IPoint, Vector3>();
             Dictionary<IPoint, int> pointToIndex = new Dictionary<IPoint, int>();
 
-
             int pointIndex = 0; 
             foreach (GameObject pointObj in _pointsObjects)
             {
+                
                 var position = pointObj.transform.position;
                 float x = position.x;
                 float y = position.z;
                 IPoint newPoint = new Point(x, y);
-                
-                iPoints.Add(newPoint);
-                pointMemory.Add(newPoint, position);
-                pointToIndex.Add(newPoint, pointIndex);
-                
-                pointIndex++;
+
+                if (!pointMemory.ContainsKey(newPoint))
+                {
+                    iPoints.Add(newPoint);
+                    pointMemory.Add(newPoint, position);
+                    pointToIndex.Add(newPoint, pointIndex);
+                    pointIndex++;
+                }
             }
 
-            ClearNetworkRender();
             DrawNetwork(iPoints, pointMemory, pointToIndex, iPoints);
 
         }
@@ -83,20 +88,26 @@ namespace DefaultNamespace
             
             int[][] edgesToRender = MST.GenerateMst(edges.ToArray(), nPoints, edges.Count);
 
+            float tStamp = Time.time * 1000;
             foreach (int[] edge in edgesToRender)
             {
                 IPoint P = iPoints[edge[0]];
                 IPoint Q = iPoints[edge[1]];
+
+                if (P.X < Q.X)
+                {
+                    (P, Q) = (Q, P);
+                }
                 
-                CreateLine(new []{pMemory[P], pMemory[Q]}, 0.2f, 1);
+                CreateLine(new []{pMemory[P], pMemory[Q]}, lineWidth, tStamp, 1);
             }
         }
 
-        private void CreateLine(Vector3[] points, float width, int order = 1)
+        private void CreateLine(Vector3[] points, float width, float timeStamp, int order = 1)
         {
             Transform container = lineContainter.transform;
 
-            var lineGameObject = new GameObject("lineSegment");
+            var lineGameObject = new GameObject("lineSegment: " + timeStamp);
             lineGameObject.transform.parent = container;
             var lineRenderer = lineGameObject.AddComponent<LineRenderer>();
 
@@ -110,10 +121,13 @@ namespace DefaultNamespace
 
         private void ClearNetworkRender()
         {
-            foreach (Transform child in lineContainter.transform)
+            int nChild = lineContainter.transform.childCount;
+
+            for (int i = 0; i < nChild; i++)
             {
-                child.parent = null;
-                DestroyImmediate(child.gameObject);
+                Transform c = lineContainter.transform.GetChild(0);
+                c.parent = null;
+                DestroyImmediate(c.gameObject);
             }
         }
 
@@ -123,6 +137,12 @@ namespace DefaultNamespace
             {
                 pointObj.transform.hasChanged = false;
             }
+        }
+
+        private void FindPoints()
+        {
+            _pointsObjects = GameObject.FindGameObjectsWithTag("cPoint");
+            
         }
     }
     
