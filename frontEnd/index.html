@@ -24,28 +24,70 @@
 
 <div id="map"></div>
 
-<div class="tabbar tabbar--top tabbar--material">
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a" checked="checked">
-      <button class="tabbar__button tabbar--material__button">
-        Power plants
-      </button>
-    </label>
-  
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a">
-      <button class="tabbar__button tabbar--material__button">
-        Nature
-      </button>
-    </label>
-  
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a">
-      <button class="tabbar__button tabbar--material__button">
-        Other
-      </button>
-    </label>
+<div class="segment" style="width: 100vw; margin: 3px auto;">
+    <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('Nature')" checked>
+      <div class="segment__button">Nature</div>
+    </div>
+    <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('PowerPlants')">
+      <div class="segment__button">Power Plants</div>
+    </div>
+    <!-- <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('Other')">
+      <div class="segment__button">Other</div>
+    </div> -->
   </div>
+
+  <div id="Nature" style="display: inline;">
+    <div class="objectContainer">
+        <div class="objectCard" id="object-bush">
+            <img class="objectImg" src="./naturePics/bush3d.png"></img>
+            <div><b>Bush</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 50</div>
+        </div>
+        <div class="objectCard" id="object-tree">
+            <img class="objectImg" src="./naturePics/tree3d.png"></img>
+            <div><b>Tree</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 100</div>
+        </div>
+        <div class="objectCard" id="object-rock">
+            <img class="objectImg" src="./naturePics/rock3d.png"></img>
+            <div><b>Rock</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 10</div>
+        </div>
+        <div class="objectCard" id="object-pine">
+            <img class="objectImg" src="./naturePics/pineTree3d.png"></img>
+            <div><b>Pine</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 100</div>
+        </div>
+    </div>
+  </div>
+
+  <div id="PowerPlants" style="display: none;">
+    <div class="objectContainer">
+       <div class="objectCard" id="object-coal">
+           <img class="objectImg" src="./powerProductionPics/coal3d.png"></img>
+           <div><b>Coal</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 500</div>
+       </div>
+       <div class="objectCard" id="object-nuclear">
+           <img class="objectImg" src="./powerProductionPics/nuclear3d.png"></img>
+           <div><b>Nuclear</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 500</div>
+       </div>
+       <div class="objectCard" id="object-solar">
+           <img class="objectImg" src="./powerProductionPics/solar3d.png"></img>
+           <div><b>Solar</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 1000</div>
+       </div>
+       <div class="objectCard" id="object-wind">
+           <img class="objectImg" src="./powerProductionPics/windturbine3D.png"></img>
+           <div><b>Wind</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 1000</div>
+       </div>
+   </div>
+ </div>
 
 <template id="infobox">
     <ons-alert-dialog id="info-dialog" modifier="rowfooter">
@@ -121,6 +163,22 @@
             ons.notification.alert('Enter an alias');
         }
     };
+
+     // show objects when category-button is pressed
+     var showObjectsToPlace = function(objects) {
+        natureDiv = document.getElementById('Nature')
+        powerPlantsDiv = document.getElementById('PowerPlants')
+        
+        if (objects == 'Nature'){
+            powerPlantsDiv.style.display = "none";
+            natureDiv.style.display = "inline";
+        }
+        if (objects == 'PowerPlants'){
+            natureDiv.style.display = "none";
+            powerPlantsDiv.style.display = "inline";
+        }
+
+    }
 
     var host = "<%= host %>";
     var port = "<%= port %>";
