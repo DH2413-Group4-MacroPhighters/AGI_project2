@@ -22,7 +22,7 @@ h1 {
 .objectContainer {
     display: flex;
     justify-content: space-between;
-    height: -webkit-fill-available;
+    height: auto;
 }
 
 .objectCard {
