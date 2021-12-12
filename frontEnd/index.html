@@ -164,6 +164,22 @@
         }
     };
 
+     // show objects when category-button is pressed
+     var showObjectsToPlace = function(objects) {
+        natureDiv = document.getElementById('Nature')
+        powerPlantsDiv = document.getElementById('PowerPlants')
+        
+        if (objects == 'Nature'){
+            powerPlantsDiv.style.display = "none";
+            natureDiv.style.display = "inline";
+        }
+        if (objects == 'PowerPlants'){
+            natureDiv.style.display = "none";
+            powerPlantsDiv.style.display = "inline";
+        }
+
+    }
+
     var host = "<%= host %>";
     var port = "<%= port %>";
     console.log('Host: ' + host + ':' + port);
