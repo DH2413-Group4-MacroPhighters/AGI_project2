@@ -40,8 +40,8 @@ public class Window_Graph : MonoBehaviour {
         gameObjectListBar = new List<GameObject>();
 
         List<int> valueList = new List<int>() { 5, 98, 56, 45, 30, 22, 17, 15, 13, 17, 25, 37, 40, 36, 33 };
-        List<int> energySourcesList = new List<int>() { 1, 2 };
-        ShowGraph(valueList, (int _i) => "Day " + (_i + 1) + "\n Hr " + ((_i + 1) % 24), (float _f) => "CO2 " + Mathf.RoundToInt(_f));
+        List<int> energySourcesList = new List<int>() { 1, 2 , 1};
+        ShowGraph(valueList, (int _i) => "Day " + (_i + 1) + "\n Hr " + ((_i + 1) % 24), (float _f) => "CO2: " + Mathf.RoundToInt(_f));
         CreateBar(energySourcesList, new Vector2(0f, -60f), 816f);
 
         FunctionPeriodic.Create(() => {
@@ -176,6 +176,10 @@ public class Window_Graph : MonoBehaviour {
         float previousWidth = 0;
         int sum = energySourceList.Sum();
         //int sum = energySourceList[0] + energySourceList[1];
+        bool renewable = true;
+
+        List<string> sources = new List<string>() { "Fossil", "Renewable", "Nuclear" };
+        
 
         foreach (GameObject gameObject in gameObjectListBar)
         {
@@ -184,11 +188,8 @@ public class Window_Graph : MonoBehaviour {
         gameObjectListBar.Clear();
 
 
-        for (int i = 0; i < energySourceList.Count; i++)
-            {
-
-                if ( previousWidth == 0)
-            {
+        for (int i = 0; i < energySourceList.Count; i++) {
+            if ( previousWidth == 0) {
                 GameObject gameObject = new GameObject("bar", typeof(Image));
                 gameObject.transform.SetParent(graphContainer, false);
                 gameObject.GetComponent<Image>().color = new Color32(188, 108, 219, 255);
@@ -201,22 +202,51 @@ public class Window_Graph : MonoBehaviour {
                 //previousWidth = barWidth * (energySourceList[i] * sum);
                 previousWidth = rectTransform.sizeDelta.x;
                 gameObjectListBar.Add(gameObject);
+
+                RectTransform labelX = Instantiate(labelTemplateX);
+                labelX.SetParent(graphContainer, false);
+                labelX.gameObject.SetActive(true);
+                labelX.anchoredPosition = new Vector2(-15f, graphPosition.y + 15f);
+                labelX.GetComponent<Text>().text = sources[i];
+                gameObjectList.Add(labelX.gameObject);
+
             }
-            else
-            {
+            else {
                 GameObject gameObject = new GameObject("bar", typeof(Image));
                 gameObject.transform.SetParent(graphContainer, false);
-                gameObject.GetComponent<Image>().color = new Color32(118, 219, 108, 255);
+                if (renewable == true) {
+                    gameObject.GetComponent<Image>().color = new Color32(118, 219, 108, 255);
+                renewable = false;
+                        }
+
+                else if (renewable == false)
+                {
+                    gameObject.GetComponent<Image>().color = new Color32(206, 255, 108, 255);
+                }
                 RectTransform rectTransform = gameObject.GetComponent<RectTransform>();
-                //rectTransform.anchoredPosition = new Vector2(graphContainer.sizeDelta.x / 2f, graphPosition.y);
-                rectTransform.anchoredPosition = new Vector2(previousWidth + 2 - 15f, graphPosition.y);
+                    //rectTransform.anchoredPosition = new Vector2(graphContainer.sizeDelta.x / 2f, graphPosition.y);
+                rectTransform.anchoredPosition = new Vector2(previousWidth - 13f, graphPosition.y);
                 rectTransform.sizeDelta = new Vector2(barWidth * (energySourceList[i] * 1f / sum), 20f);
                 rectTransform.anchorMin = new Vector2(0, 0);
                 rectTransform.anchorMax = new Vector2(0, 0);
                 rectTransform.pivot = new Vector2(0, 1f);
-                previousWidth = barWidth * (energySourceList[i] * sum);
+                //previousWidth = barWidth * (energySourceList[i] / sum);
+
+                RectTransform labelX = Instantiate(labelTemplateX);
+                labelX.SetParent(graphContainer, false);
+                labelX.gameObject.SetActive(true);
+                labelX.anchoredPosition = new Vector2(previousWidth - 13f, graphPosition.y + 15f);
+                labelX.GetComponent<Text>().text = sources[i];
+                gameObjectList.Add(labelX.gameObject);
+
+                previousWidth = previousWidth + 2f + rectTransform.sizeDelta.x;
                 gameObjectListBar.Add(gameObject);
+                renewable = false;
+
+               
             }
+
+                
 
         }
 
