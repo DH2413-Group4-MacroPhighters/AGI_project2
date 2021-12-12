@@ -19,6 +19,29 @@ h1 {
     height: 50vh;
 }
 
+.objectContainer {
+    display: flex;
+    justify-content: space-between;
+    height: -webkit-fill-available;
+}
+
+.objectCard {
+    margin: 0.5em;
+    text-align: center;
+}
+
+.objectPrice {
+    display: flex;
+    justify-content: center;
+}
+
+.objectImg {
+    height: 70px;
+}
+.coinImg {
+    height: 25px;
+}
+
 /* #form {
     background: rgba(0, 0, 0, 0.15);
     padding: 0.25rem;
