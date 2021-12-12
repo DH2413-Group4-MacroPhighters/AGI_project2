@@ -15,6 +15,10 @@ h1 {
     text-align: center;
 }
 
+#map { 
+    height: 50vh;
+}
+
 /* #form {
     background: rgba(0, 0, 0, 0.15);
     padding: 0.25rem;
@@ -56,6 +60,3 @@ messages {
     background: #efefef;
 } */
 
-#map { 
-    height: 50vh;
-}

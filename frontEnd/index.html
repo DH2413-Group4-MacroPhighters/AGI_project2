@@ -24,27 +24,19 @@
 
 <div id="map"></div>
 
-<div class="tabbar tabbar--top tabbar--material">
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a" checked="checked">
-      <button class="tabbar__button tabbar--material__button">
-        Power plants
-      </button>
-    </label>
-  
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a">
-      <button class="tabbar__button tabbar--material__button">
-        Nature
-      </button>
-    </label>
-  
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a">
-      <button class="tabbar__button tabbar--material__button">
-        Other
-      </button>
-    </label>
+<div class="segment" style="width: 100vw; margin: 3px auto;">
+    <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('Nature')" checked>
+      <div class="segment__button">Nature</div>
+    </div>
+    <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('PowerPlants')">
+      <div class="segment__button">Power Plants</div>
+    </div>
+    <!-- <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('Other')">
+      <div class="segment__button">Other</div>
+    </div> -->
   </div>
 
 <template id="infobox">
