@@ -127,7 +127,7 @@
 </template>
 
 <script >
-    var clientName = '';
+    var clientName = localStorage.getItem("clientName");
 
     // create infobox
     var showInfoBox = function() {
@@ -144,18 +144,19 @@
         .hide();
     }
 
-    // creates the start pop-up
-    ons
-        .createElement('start_popup', { append: true })
+    if (clientName == '' || clientName == null) {
+        // creates the start pop-up
+        ons.createElement('start_popup', { append: true })
         .then(function(dialog) {
             dialog.show();
         });
+    }
 
     // close the start pop-up if an alias have been given
     var hideStartPopup = function() {
         clientName = document.getElementById('alias').value;
-
-        if (clientName!='') {
+        if (clientName!='' && clientName != null) {
+            localStorage.setItem("clientName", clientName);
             document
             .getElementById('start-dialog')
             .hide();
@@ -199,7 +200,7 @@
     var placed_objects = '{}';
     var objects_layer = L.layerGroup([]);
 
-    var map = L.map('map', {crs: L.CRS.Simple}).setView([0, 0], 2);
+    var map = L.map('map', {crs: L.CRS.Simple}).setView([0, 0], 1);
     map.setMaxBounds(map.getBounds());
 
     var imageUrl = '/uploads/map.png', imageBounds = [[-111,-111], [112, 112]];
@@ -304,10 +305,10 @@
 
     //Loading the rock image and draws it with (x,y) as center.
     function drawRock(x, y, clientName) {
-        var lowX = x-1;
-        var highX = x+1;
-        var lowY = y-1;
-        var highY = y+1;
+        var lowX = x-1.5;
+        var highX = x+1.5;
+        var lowY = y-1.5;
+        var highY = y+1.5;
         var imageUrl = '/naturePics/rockTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
         overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
         overlays.push(overlay);
@@ -326,10 +327,10 @@
 
     //Loading the coal power plant image and draws it with (x,y) as center.
     function drawCoal(x, y, clientName) {
-        var lowX = x-5;
-        var highX = x+5;
-        var lowY = y-5;
-        var highY = y+5;
+        var lowX = x-10;
+        var highX = x+10;
+        var lowY = y-10;
+        var highY = y+10;
         var imageUrl = '/powerProductionPics/coalTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
         overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
         overlays.push(overlay);
@@ -337,10 +338,10 @@
 
     //Loading the coal power plant image and draws it with (x,y) as center.
     function drawNuclear(x, y, clientName) {
-        var lowX = x-5;
-        var highX = x+5;
-        var lowY = y-5;
-        var highY = y+5;
+        var lowX = x-14;
+        var highX = x+14;
+        var lowY = y-14;
+        var highY = y+14;
         var imageUrl = '/powerProductionPics/nuclearTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
         overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
         overlays.push(overlay);
@@ -348,10 +349,10 @@
 
     //Loading the coal power plant image and draws it with (x,y) as center.
     function drawSolar(x, y, clientName) {
-        var lowX = x-4;
-        var highX = x+4;
-        var lowY = y-4;
-        var highY = y+4;
+        var lowX = x-6;
+        var highX = x+6;
+        var lowY = y-6;
+        var highY = y+6;
         var imageUrl = '/powerProductionPics/solarTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
         overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
         overlays.push(overlay);
@@ -360,10 +361,10 @@
 
     //Loading the coal power plant image and draws it with (x,y) as center.
     function drawWind(x, y, clientName) {
-        var lowX = x-4;
-        var highX = x+4;
-        var lowY = y-4;
-        var highY = y+4;
+        var lowX = x-12;
+        var highX = x+12;
+        var lowY = y-12;
+        var highY = y+12;
         var imageUrl = '/powerProductionPics/windturbineTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
         overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
         overlays.push(overlay);
