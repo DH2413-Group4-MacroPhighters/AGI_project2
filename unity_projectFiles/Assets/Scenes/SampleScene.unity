@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44053462, g: 0.48915297, b: 0.5692991, a: 1}
+  m_IndirectSpecularColor: {r: 0.44053462, g: 0.4891529, b: 0.5692991, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -168,6 +168,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tree: {fileID: 5436891547774951183, guid: 32b7fd18d77074d059c80cdfffb23928, type: 3}
+  bush: {fileID: 1562067220165169131, guid: 7a5f7284d5f60435187219a333f9a6c2, type: 3}
+  rock: {fileID: 3972283975662513893, guid: e6d528fb9c3c343e289bbfa8284047ae, type: 3}
+  pineTree: {fileID: 4954605397087935371, guid: db1e793bea8c74b62b90dd798da7be03, type: 3}
+  coal: {fileID: 7421552326064966264, guid: 1eccf84bab5df9f4c9214160ed6e4739, type: 3}
+  nuclear: {fileID: 8706434135868525781, guid: 79a24b95b4ba549c8a4642afabb2b6c3, type: 3}
+  solar: {fileID: 2294791428059369155, guid: fadd56fbedb8d4773a6b3b3b7140564f, type: 3}
+  windTurbine: {fileID: 4833966265946263036, guid: 41282d4145f0b4f8bbe59df8ff53ed5f, type: 3}
   scenePart: {fileID: 9015848082427148904}
   mapCamera: {fileID: 1969597184}
 --- !u!1 &65403035
