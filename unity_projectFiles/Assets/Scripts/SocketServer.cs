@@ -9,6 +9,13 @@ public class SocketServer : MonoBehaviour
 {
     WebSocket ws;
     public GameObject tree;
+    public GameObject bush;
+    public GameObject rock;
+    public GameObject pineTree;
+    public GameObject coal;
+    public GameObject nuclear;
+    public GameObject solar;
+    public GameObject windTurbine;
     private GameObject objectToPlace;
     public GameObject scenePart;
     public Camera mapCamera;
@@ -68,11 +75,33 @@ public class SocketServer : MonoBehaviour
         private void PlaceObjects()
         {
             foreach (PLACEMENT placement in placements) {
+                placeFlag = false;
                 GameObject objectToPlace;
                 switch(placement.type)
                 {
                     case "tree": 
                         objectToPlace = tree;
+                        break;
+                    case "bush": 
+                        objectToPlace = bush;
+                        break;
+                    case "rock": 
+                        objectToPlace = rock;
+                        break;
+                    case "pineTree": 
+                        objectToPlace = pineTree;
+                        break;
+                    case "coal": 
+                        objectToPlace = coal;
+                        break;
+                    case "nuclear": 
+                        objectToPlace = nuclear;
+                        break;
+                    case "solar": 
+                        objectToPlace = solar;
+                        break;
+                    case "wind": 
+                        objectToPlace = windTurbine;
                         break;
                     default: throw new ArgumentException("ObjectType does not exist");
                 }
@@ -82,7 +111,6 @@ public class SocketServer : MonoBehaviour
                 GameObject new_object = Instantiate(objectToPlace, position, rotation);
                 new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + placement.clientName;
             }
-            placeFlag = false;
             placements.Clear();
         }
 
