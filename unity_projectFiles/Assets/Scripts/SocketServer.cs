@@ -105,8 +105,15 @@ public class SocketServer : MonoBehaviour
                         break;
                     default: throw new ArgumentException("ObjectType does not exist");
                 }
+                float height = 75.1f;
+                if (placement.y > 35) {
+                    height = 109f;
+                }
+                if (placement.y < -13) {
+                    height = 59.1f;
+                }
                 Debug.Log("place object");
-                Vector3 position = new Vector3(-placement.x, 65.1f, -placement.y);
+                Vector3 position = new Vector3(-placement.x, height, -placement.y);
                 Quaternion rotation = scenePart.transform.rotation;
                 GameObject new_object = Instantiate(objectToPlace, position, rotation);
                 new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + placement.clientName;
