@@ -232,28 +232,28 @@
             if (new_objects.hasOwnProperty(ID) && !old_objects.hasOwnProperty(ID)) {
                 switch(new_objects[ID].type) {
                     case "tree":
-                        drawTree(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 2, '/tree.png');
                         break;
                     case "bush":
-                        drawBush(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 1.5, '/naturePics/bushTopDown.png');
                         break;
                     case "rock":
-                        drawRock(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 1.3, '/naturePics/rockTopDown.png');
                         break;
                     case "pineTree":
-                        drawPineTree(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 2, '/naturePics/pineTreeTopDown.png');
                         break;
                     case "coal":
-                        drawCoal(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 10, '/powerProductionPics/coalTopDown.png');
                         break;
                     case "nuclear":
-                        drawNuclear(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 14, '/powerProductionPics/nuclearTopDown.png');
                         break;
                     case "solar":
-                        drawSolar(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 6, '/powerProductionPics/solarTopDown.png');
                         break;
                     case "wind":
-                        drawWind(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 12, '/powerProductionPics/windturbineTopDown.png');
                         break;
                     default: throw 'objectType does not exist';
                 }
@@ -281,92 +281,20 @@
         }
     }
 
+    function remove(id) {
+        console.log("hej " + id);
+    }
+
     //Loading the tree image and draws it with (x,y) as center.
-    function drawTree(x, y, clientName) {
-        var lowX = x-2;
-        var highX = x+2;
-        var lowY = y-2;
-        var highY = y+2;
-        var imageUrl = '/tree.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
-        overlays.push(overlay);
-    }
-
-    //Loading the bush image and draws it with (x,y) as center.
-    function drawBush(x, y, clientName) {
-        var lowX = x-1.5;
-        var highX = x+1.5;
-        var lowY = y-1.5;
-        var highY = y+1.5;
-        var imageUrl = '/naturePics/bushTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
-        overlays.push(overlay);
-    }
-
-    //Loading the rock image and draws it with (x,y) as center.
-    function drawRock(x, y, clientName) {
-        var lowX = x-1.5;
-        var highX = x+1.5;
-        var lowY = y-1.5;
-        var highY = y+1.5;
-        var imageUrl = '/naturePics/rockTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
-        overlays.push(overlay);
-    }
-
-    //Loading the pine tree image and draws it with (x,y) as center.
-    function drawPineTree(x, y, clientName) {
-        var lowX = x-2;
-        var highX = x+2;
-        var lowY = y-2;
-        var highY = y+2;
-        var imageUrl = '/naturePics/pineTreeTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
-        overlays.push(overlay);
-    }
-
-    //Loading the coal power plant image and draws it with (x,y) as center.
-    function drawCoal(x, y, clientName) {
-        var lowX = x-10;
-        var highX = x+10;
-        var lowY = y-10;
-        var highY = y+10;
-        var imageUrl = '/powerProductionPics/coalTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
-        overlays.push(overlay);
-    }
-
-    //Loading the coal power plant image and draws it with (x,y) as center.
-    function drawNuclear(x, y, clientName) {
-        var lowX = x-14;
-        var highX = x+14;
-        var lowY = y-14;
-        var highY = y+14;
-        var imageUrl = '/powerProductionPics/nuclearTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
-        overlays.push(overlay);
-    }
-
-    //Loading the coal power plant image and draws it with (x,y) as center.
-    function drawSolar(x, y, clientName) {
-        var lowX = x-6;
-        var highX = x+6;
-        var lowY = y-6;
-        var highY = y+6;
-        var imageUrl = '/powerProductionPics/solarTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
-        overlays.push(overlay);
-    }
-
-
-    //Loading the coal power plant image and draws it with (x,y) as center.
-    function drawWind(x, y, clientName) {
-        var lowX = x-12;
-        var highX = x+12;
-        var lowY = y-12;
-        var highY = y+12;
-        var imageUrl = '/powerProductionPics/windturbineTopDown.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName);
+    function drawObject(x, y, clientName, objectID, sizeFactor, imagePath) {
+        console.log(objectID);
+        var lowX = x-sizeFactor;
+        var highX = x+sizeFactor;
+        var lowY = y-sizeFactor;
+        var highY = y+sizeFactor;
+        var imageUrl = imagePath, imageBounds = [[lowY,lowX], [highY, highX]];
+        var button = '<br/><button type="button" class="btn btn-primary" onclick="remove(\''+objectID+'\')">Remove</button>'
+        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName + button);
         overlays.push(overlay);
     }
 
