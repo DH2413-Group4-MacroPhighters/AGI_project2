@@ -13,7 +13,7 @@ Material:
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 3000
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -60,7 +60,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - _AmbientLighting: 0.22
+    - _AmbientLighting: 0.233
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0
@@ -70,7 +70,8 @@ Material:
     - _Cutoff: 0.5
     - _DeapthExpV: 2
     - _DeapthStrength: 50
-    - _DepthExpV: 0.0387
+    - _DepthExpV: 0.0623
+    - _DepthFactor: 0.2
     - _DepthStrength: 50
     - _DetailNormalMapScale: 1
     - _DiffusePart: 1
@@ -105,12 +106,13 @@ Material:
     - _WaveAmp: 2
     - _WaveFreq: 0.5
     - _WaveSpeed: 5.28
-    - _Z: 83.8
+    - _Z: 82.8
     - _ZWrite: 1
     - _b: 5
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 0, g: 0.41550738, b: 0.6981132, a: 1}
+    - _Color: {r: 0, g: 0.32556605, b: 0.5471698, a: 1}
+    - _EdgeColor: {r: 0.26199996, g: 0.6995285, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
