@@ -1,17 +1,21 @@
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Serialization;
 using WebSocketSharp;
-using UnityEngine.UI;
 
 public class SocketServer : MonoBehaviour
 {
     WebSocket ws;
     public GameObject tree;
+    public GameObject bush;
+    public GameObject rock;
+    public GameObject pineTree;
+    public GameObject coal;
+    public GameObject nuclear;
+    public GameObject solar;
+    public GameObject windTurbine;
     private GameObject objectToPlace;
     public GameObject scenePart;
     public Camera mapCamera;
@@ -71,21 +75,49 @@ public class SocketServer : MonoBehaviour
         private void PlaceObjects()
         {
             foreach (PLACEMENT placement in placements) {
+                placeFlag = false;
                 GameObject objectToPlace;
                 switch(placement.type)
                 {
                     case "tree": 
                         objectToPlace = tree;
                         break;
+                    case "bush": 
+                        objectToPlace = bush;
+                        break;
+                    case "rock": 
+                        objectToPlace = rock;
+                        break;
+                    case "pineTree": 
+                        objectToPlace = pineTree;
+                        break;
+                    case "coal": 
+                        objectToPlace = coal;
+                        break;
+                    case "nuclear": 
+                        objectToPlace = nuclear;
+                        break;
+                    case "solar": 
+                        objectToPlace = solar;
+                        break;
+                    case "wind": 
+                        objectToPlace = windTurbine;
+                        break;
                     default: throw new ArgumentException("ObjectType does not exist");
                 }
+                float height = 75.1f;
+                if (placement.y > 35) {
+                    height = 109f;
+                }
+                if (placement.y < -13) {
+                    height = 59.1f;
+                }
                 Debug.Log("place object");
-                Vector3 position = new Vector3(-placement.x, 65.1f, -placement.y);
+                Vector3 position = new Vector3(-placement.x, height, -placement.y);
                 Quaternion rotation = scenePart.transform.rotation;
                 GameObject new_object = Instantiate(objectToPlace, position, rotation);
                 new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + placement.clientName;
             }
-            placeFlag = false;
             placements.Clear();
         }
 

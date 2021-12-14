@@ -3,7 +3,7 @@ Shader "Unlit/waveShader"
     Properties
     {
         // THis is valus that is set by the user, The material settings.
-        _Color ("TestColor", Color) = (1,1,1,1)
+        //_Color ("TestColor", Color) = (1,1,1,1)
         
         _WaveAmp ("Wave Amplitude", Float) = 0.1
         _WaveSpeed("Wave Speed", Float) = 0.5
@@ -16,6 +16,15 @@ Shader "Unlit/waveShader"
         _AmbientLighting("AmbientLighting", range(0,1))= 0.2
         
         _DepthExpV("LightAbsorbtion factor" , range(0,0.1)) = 0.01
+        _Z("Max Zero Absorbtion point " , range(0, 200)) = 1
+        
+         // color of the water
+  
+        _Color("Color", Color) = (1, 1, 1, 1)
+        // color of the edge effect
+        _EdgeColor("Edge Color", Color) = (1, 1, 1, 1)
+        // width of the edge effect
+        _DepthFactor("Depth Factor", float) = 1.0
         
     }
     SubShader
@@ -51,8 +60,15 @@ Shader "Unlit/waveShader"
             float _SpecPart;
             float _AmbientLighting;
 
-            float _DepthStrength;
             float _DepthExpV;
+            float _Z;
+
+            sampler2D _CameraDepthTexture;
+            
+        // color of the edge effect
+            float4 _EdgeColor;
+        // width of the edge effect
+            float _DepthFactor;
 
             struct MeshData
             {
@@ -67,6 +83,7 @@ Shader "Unlit/waveShader"
                 float3 normals: TEXCOORD0;
                 float2 uv : TEXCOORD1;
                 float3 worldPos: TEXCOORD2;
+                float4 screenPos : TEXCOORD3;
             };
             
 
@@ -90,6 +107,7 @@ Shader "Unlit/waveShader"
                 o.worldPos = v.vertex;
                 o.vertex = UnityObjectToClipPos(mul(unity_WorldToObject, v.vertex));
                 o.uv = v.uv;
+                o.screenPos = ComputeScreenPos(o.vertex);
                 
                 return o;
             } 
@@ -100,6 +118,19 @@ Shader "Unlit/waveShader"
                 
                 // sample the texture
                 //fixed4 col = tex2D(_MainTex, i.uv);
+
+                float4 depthSample = SAMPLE_DEPTH_TEXTURE_PROJ(_CameraDepthTexture, i.screenPos);
+                float depth = LinearEyeDepth(depthSample).r;
+  
+                // apply the DepthFactor to be able to tune at what depth values
+                // the foam line actually starts
+                float foamLine = 1 - saturate(_DepthFactor * (depth - i.screenPos.w));
+  
+                // multiply the edge color by the foam factor to get the edge,
+                // then add that to the color of the water
+                
+                float4 blendedColor = lerp(_Color,_EdgeColor, foamLine ); //_Color + foamLine * _EdgeColor;//lerp(_Color,_EdgeColor, foamLine );
+                
                 float3 c = float3(0,0,0);
 
                 float3 ddxPos = ddx(i.worldPos);
@@ -110,10 +141,10 @@ Shader "Unlit/waveShader"
                 float3 L = _WorldSpaceLightPos0.xyz;
 
 
-                c += _Color*_AmbientLighting;
+                c += blendedColor*_AmbientLighting;
                 // diffuse
                 const float diffuse_light = saturate(dot(N, L))*_DiffusePart;
-                c += _Color*diffuse_light*_LightColor0.xyz;
+                c += blendedColor*diffuse_light*_LightColor0.xyz;
 
                 //specular
                 float3 ViewVector = _WorldSpaceCameraPos - i.worldPos;
@@ -126,9 +157,10 @@ Shader "Unlit/waveShader"
                 _Glossy = exp2(_Glossy*8 + 1);
                 spec_light = pow(spec_light, _Glossy);
 
-                float alpha = 1 - exp(-_DepthExpV*length(ViewVector));
+                float alpha = saturate(1 - (1/exp(-_DepthExpV*_Z))*exp(-_DepthExpV*length(ViewVector)));
 
-                c+=spec_light*_LightColor0.xyz; 
+                c+=spec_light*_LightColor0.xyz;
+                
                 return float4(c, alpha);
                 //return _Color;
                 //return float4(0,i.vertex.xy,1);

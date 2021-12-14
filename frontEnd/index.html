@@ -24,28 +24,70 @@
 
 <div id="map"></div>
 
-<div class="tabbar tabbar--top tabbar--material">
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a" checked="checked">
-      <button class="tabbar__button tabbar--material__button">
-        Power plants
-      </button>
-    </label>
-  
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a">
-      <button class="tabbar__button tabbar--material__button">
-        Nature
-      </button>
-    </label>
-  
-    <label class="tabbar__item tabbar--material__item">
-      <input type="radio" name="tabbar-material-a">
-      <button class="tabbar__button tabbar--material__button">
-        Other
-      </button>
-    </label>
+<div class="segment" style="width: 100vw; margin: 3px auto;">
+    <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('Nature')" checked>
+      <div class="segment__button">Nature</div>
+    </div>
+    <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('PowerPlants')">
+      <div class="segment__button">Power Plants</div>
+    </div>
+    <!-- <div class="segment__item">
+      <input type="radio" class="segment__input" name="segment-a" onclick="showObjectsToPlace('Other')">
+      <div class="segment__button">Other</div>
+    </div> -->
   </div>
+
+  <div id="Nature" style="display: inline;">
+    <div class="objectContainer">
+        <div class="objectCard" id="object-bush" onclick="changeObject('bush')">
+            <img class="objectImg" src="./naturePics/bush3d.png"></img>
+            <div><b>Bush</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 50</div>
+        </div>
+        <div class="objectCard" id="object-tree" onclick="changeObject('tree')">
+            <img class="objectImg" src="./naturePics/tree3d.png"></img>
+            <div><b>Tree</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 100</div>
+        </div>
+        <div class="objectCard" id="object-rock" onclick="changeObject('rock')">
+            <img class="objectImg" src="./naturePics/rock3d.png"></img>
+            <div><b>Rock</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 10</div>
+        </div>
+        <div class="objectCard" id="object-pine" onclick="changeObject('pineTree')">
+            <img class="objectImg" src="./naturePics/pineTree3d.png"></img>
+            <div><b>Pine</b></div>
+            <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 100</div>
+        </div>
+    </div>
+  </div>
+
+  <div id="PowerPlants" style="display: none;">
+    <div class="objectContainer">
+       <div class="objectCard" id="object-coal" onclick="changeObject('coal')">
+           <img class="objectImg" src="./powerProductionPics/coal3d.png"></img>
+           <div><b>Coal</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 500</div>
+       </div>
+       <div class="objectCard" id="object-nuclear" onclick="changeObject('nuclear')">
+           <img class="objectImg" src="./powerProductionPics/nuclear3d.png"></img>
+           <div><b>Nuclear</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 500</div>
+       </div>
+       <div class="objectCard" id="object-solar" onclick="changeObject('solar')">
+           <img class="objectImg" src="./powerProductionPics/solar3d.png"></img>
+           <div><b>Solar</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 1000</div>
+       </div>
+       <div class="objectCard" id="object-wind" onclick="changeObject('wind')">
+           <img class="objectImg" src="./powerProductionPics/windturbine3D.png"></img>
+           <div><b>Wind</b></div>
+           <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 1000</div>
+       </div>
+   </div>
+ </div>
 
 <template id="infobox">
     <ons-alert-dialog id="info-dialog" modifier="rowfooter">
@@ -85,6 +127,7 @@
 </template>
 
 <script >
+    var clientName = localStorage.getItem("clientName");
 
     // create infobox
     var showInfoBox = function() {
@@ -101,18 +144,19 @@
         .hide();
     }
 
-    // creates the start pop-up
-    ons
-        .createElement('start_popup', { append: true })
+    if (clientName == '' || clientName == null) {
+        // creates the start pop-up
+        ons.createElement('start_popup', { append: true })
         .then(function(dialog) {
             dialog.show();
         });
+    }
 
     // close the start pop-up if an alias have been given
     var hideStartPopup = function() {
-        var alias = document.getElementById('alias').value;
-
-        if (alias!='') {
+        clientName = document.getElementById('alias').value;
+        if (clientName!='' && clientName != null) {
+            localStorage.setItem("clientName", clientName);
             document
             .getElementById('start-dialog')
             .hide();
@@ -121,6 +165,22 @@
             ons.notification.alert('Enter an alias');
         }
     };
+
+     // show objects when category-button is pressed
+     var showObjectsToPlace = function(objects) {
+        natureDiv = document.getElementById('Nature')
+        powerPlantsDiv = document.getElementById('PowerPlants')
+        
+        if (objects == 'Nature'){
+            powerPlantsDiv.style.display = "none";
+            natureDiv.style.display = "inline";
+        }
+        if (objects == 'PowerPlants'){
+            natureDiv.style.display = "none";
+            powerPlantsDiv.style.display = "inline";
+        }
+
+    }
 
     var host = "<%= host %>";
     var port = "<%= port %>";
@@ -140,14 +200,16 @@
     var placed_objects = '{}';
     var objects_layer = L.layerGroup([]);
 
-    var map = L.map('map', {crs: L.CRS.Simple}).setView([0, 0], 2);
+    var map = L.map('map', {crs: L.CRS.Simple}).setView([0, 0], 1);
     map.setMaxBounds(map.getBounds());
 
     var imageUrl = '/uploads/map.png', imageBounds = [[-111,-111], [112, 112]];
     let overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
     objects_layer.addTo(map);
 
-    var clientName = "placeHolder";
+    function changeObject(objectName){
+        objectType = objectName;
+    }
 
     //clears the state and removes everything from the map
     function clearState() {
@@ -170,7 +232,28 @@
             if (new_objects.hasOwnProperty(ID) && !old_objects.hasOwnProperty(ID)) {
                 switch(new_objects[ID].type) {
                     case "tree":
-                        drawTree(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName);
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 2, '/tree.png');
+                        break;
+                    case "bush":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 1.5, '/naturePics/bushTopDown.png');
+                        break;
+                    case "rock":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 1.3, '/naturePics/rockTopDown.png');
+                        break;
+                    case "pineTree":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 2, '/naturePics/pineTreeTopDown.png');
+                        break;
+                    case "coal":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 10, '/powerProductionPics/coalTopDown.png');
+                        break;
+                    case "nuclear":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 14, '/powerProductionPics/nuclearTopDown.png');
+                        break;
+                    case "solar":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 6, '/powerProductionPics/solarTopDown.png');
+                        break;
+                    case "wind":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 12, '/powerProductionPics/windturbineTopDown.png');
                         break;
                     default: throw 'objectType does not exist';
                 }
@@ -198,14 +281,20 @@
         }
     }
 
+    function remove(id) {
+        console.log("hej " + id);
+    }
+
     //Loading the tree image and draws it with (x,y) as center.
-    function drawTree(x, y, clientName) {
-        var lowX = x-2;
-        var highX = x+2;
-        var lowY = y-2;
-        var highY = y+2;
-        var imageUrl = '/tree.png', imageBounds = [[lowY,lowX], [highY, highX]];
-        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Tree added by: ' + clientName);
+    function drawObject(x, y, clientName, objectID, sizeFactor, imagePath) {
+        console.log(objectID);
+        var lowX = x-sizeFactor;
+        var highX = x+sizeFactor;
+        var lowY = y-sizeFactor;
+        var highY = y+sizeFactor;
+        var imageUrl = imagePath, imageBounds = [[lowY,lowX], [highY, highX]];
+        var button = '<br/><button type="button" class="btn btn-primary" onclick="remove(\''+objectID+'\')">Remove</button>'
+        overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).bindPopup('Added by: ' + clientName + button);
         overlays.push(overlay);
     }
 

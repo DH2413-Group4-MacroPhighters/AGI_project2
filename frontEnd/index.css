@@ -15,6 +15,33 @@ h1 {
     text-align: center;
 }
 
+#map { 
+    height: 50vh;
+}
+
+.objectContainer {
+    display: flex;
+    justify-content: space-between;
+    height: auto;
+}
+
+.objectCard {
+    margin: 0.5em;
+    text-align: center;
+}
+
+.objectPrice {
+    display: flex;
+    justify-content: center;
+}
+
+.objectImg {
+    height: 70px;
+}
+.coinImg {
+    height: 25px;
+}
+
 /* #form {
     background: rgba(0, 0, 0, 0.15);
     padding: 0.25rem;
@@ -56,6 +83,3 @@ messages {
     background: #efefef;
 } */
 
-#map { 
-    height: 50vh;
-}
