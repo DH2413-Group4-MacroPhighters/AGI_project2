@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using WebSocketSharp;
+using System.Text.RegularExpressions;
 
 public class SocketServer : MonoBehaviour
 {
@@ -22,7 +23,10 @@ public class SocketServer : MonoBehaviour
 
     private STATE state;
 
-    List<PLACEMENT> placements = new List<PLACEMENT>();
+    private Dictionary<string, PLACEMENT> placement_dict = new Dictionary<string, PLACEMENT>();
+
+    [SerializeField]
+    private Dictionary<string, GameObject> placed_objects = new Dictionary<string, GameObject>();
 
     private long placeX;
 
@@ -30,25 +34,35 @@ public class SocketServer : MonoBehaviour
 
     private string clientName;
 
+    private string removeID = "";
+
+    private bool removeFlag = false;
+
     private bool placeFlag = false;
         private void Start()
         {
-            CONFIG config = readCONFIG();
+            CONFIG config = ReadCONFIG();
             ws = new WebSocket("ws://" + config.HostIP + ":" + config.PortWs);
             ws.Connect();
-            ws.Send("clear");
+            ws.Send("clear ");
             ws.OnMessage += (sender, e) =>
             {
                 string message = e.Data;
                 Debug.Log("Message Received from "+((WebSocket)sender).Url+", Data : "+e.Data);
                 switch(message)
                 {
-                    case "clear": break;
-                    case "new-client": break;
+                    case "clear ": break;
+                    case "new-client ": break;
+                    case var str when new Regex("^remove.*$").IsMatch(str):
+                    {
+                        var str_array = str.Split(' ');
+                        removeID = str_array[1];
+                        removeFlag = true;
+                        break;
+                    }
                     default: 
                     {
-                        PLACEMENT new_placement = readDATA(e.Data);
-                        placements.Add(new_placement);
+                        ReadDATAaddPlacement(e.Data);
                         placeFlag = true;
                         break;
                     }
@@ -62,19 +76,21 @@ public class SocketServer : MonoBehaviour
             if (placeFlag) {
                 PlaceObjects();
             }
+            if (removeFlag) {
+                Remove(removeID);
+            }
             if(ws == null)
             {
                 return;
-            }if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ws.Send("Hello from  UNITY MY LITTLE FRIEND");
-            }  
+            }
         }
 
         //called if placeFlag is true. Places tree in correct spot in the world.
         private void PlaceObjects()
         {
-            foreach (PLACEMENT placement in placements) {
+            foreach (KeyValuePair<string, PLACEMENT> kvp in placement_dict) {
+                string ID = kvp.Key;
+                PLACEMENT placement = kvp.Value;
                 placeFlag = false;
                 GameObject objectToPlace;
                 switch(placement.type)
@@ -117,19 +133,21 @@ public class SocketServer : MonoBehaviour
                 Quaternion rotation = scenePart.transform.rotation;
                 GameObject new_object = Instantiate(objectToPlace, position, rotation);
                 new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + placement.clientName;
+                new_object.name = ID;
+                placed_objects.Add(ID, new_object);
             }
-            placements.Clear();
+            placement_dict.Clear();
         }
 
-        private PLACEMENT readDATA(string json) {
+        private void ReadDATAaddPlacement(string json) {
             state = JsonConvert.DeserializeObject<STATE>(json);
             string newID = state.newID;
             Dictionary<string,PLACEMENT> objects = state.objects;
             PLACEMENT new_placement = objects[newID];
-            return new_placement;
+            placement_dict.Add(newID,new_placement);
         }
 
-        private CONFIG readCONFIG() {
+        private CONFIG ReadCONFIG() {
             string json = "{}";
             using (StreamReader r = new StreamReader("../config.json"))
             {
@@ -155,7 +173,18 @@ public class SocketServer : MonoBehaviour
                         
             }
         }
+
+        private void Remove(string id) {
+            removeID = "";
+            removeFlag = false;
+            GameObject objToRemove = placed_objects[id];
+            placed_objects.Remove(id);
+            Destroy(objToRemove);
+            Debug.Log("Destroyed: " + id);
+        }
 }
+
+
 
 public class CONFIG
 {
