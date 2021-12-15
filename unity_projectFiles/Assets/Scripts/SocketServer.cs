@@ -88,10 +88,13 @@ public class SocketServer : MonoBehaviour
         //called if placeFlag is true. Places tree in correct spot in the world.
         private void PlaceObjects()
         {
+            placeFlag = false;
             foreach (KeyValuePair<string, PLACEMENT> kvp in placement_dict) {
                 string ID = kvp.Key;
                 PLACEMENT placement = kvp.Value;
-                placeFlag = false;
+                if (placed_objects.ContainsKey(ID)) {
+                    continue;
+                }
                 GameObject objectToPlace;
                 switch(placement.type)
                 {
@@ -142,6 +145,9 @@ public class SocketServer : MonoBehaviour
         private void ReadDATAaddPlacement(string json) {
             state = JsonConvert.DeserializeObject<STATE>(json);
             string newID = state.newID;
+            if (placement_dict.ContainsKey(newID)) {
+                return;
+            }
             Dictionary<string,PLACEMENT> objects = state.objects;
             PLACEMENT new_placement = objects[newID];
             placement_dict.Add(newID,new_placement);
