@@ -43,7 +43,7 @@ public class moveCamera : MonoBehaviour
                 back = true;
                 randomExtra = RandomVect(new Vector3(-90,-10,90), new Vector3(90,10,90), spotAbove);
             } else {
-                spinSpeed = 8;
+                spinSpeed = 7;
                 forward = false;
                 back = false;
                 randomExtra = new Vector3(0,0,0);
