@@ -187,7 +187,7 @@
     console.log('Host: ' + host + ':' + port);
     const socket = new WebSocket('ws://' + host + ':' + port);
     socket.onopen = function(event) {
-        socket.send('new-client');
+        socket.send('new-client ');
     };
 
     //objectType should be set by chosing object in a list
@@ -270,19 +270,66 @@
         console.log(event);
         var message = event.data;
         console.log(message);
-        switch(message) {
+        var message_type = message.substr(0,message.indexOf(' '));
+        switch(message_type) {
             case "clear":
                 clearState();
                 break;
             case "new-client":
                 console.log("new_client");
                 break;
+            case "remove":
+                remove_from_state(message.substr(message.indexOf(' ') + 1));
+                break;
             default: update_state(message);
         }
     }
 
     function remove(id) {
-        console.log("hej " + id);
+        socket.send("remove " + id);
+    }
+
+    function remove_from_state(id) {
+        const json = JSON.parse(state);
+        delete json.objects[id];
+        json.newID = "";
+        clearState();
+        const new_objects = json.objects;
+        for (var ID in new_objects) {
+            if (new_objects.hasOwnProperty(ID)) {
+                switch(new_objects[ID].type) {
+                    case "tree":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 2, '/tree.png');
+                        break;
+                    case "bush":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 1.5, '/naturePics/bushTopDown.png');
+                        break;
+                    case "rock":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 1.3, '/naturePics/rockTopDown.png');
+                        break;
+                    case "pineTree":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 2, '/naturePics/pineTreeTopDown.png');
+                        break;
+                    case "coal":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 10, '/powerProductionPics/coalTopDown.png');
+                        break;
+                    case "nuclear":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 14, '/powerProductionPics/nuclearTopDown.png');
+                        break;
+                    case "solar":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 6, '/powerProductionPics/solarTopDown.png');
+                        break;
+                    case "wind":
+                        drawObject(new_objects[ID].x, new_objects[ID].y, new_objects[ID].clientName, ID, 12, '/powerProductionPics/windturbineTopDown.png');
+                        break;
+                    default: throw 'objectType does not exist';
+                }
+            }
+        }
+        placed_objects = JSON.stringify(new_objects);
+        objects_layer = L.layerGroup(overlays);
+        objects_layer.addTo(map);
+        state = JSON.stringify(json);
     }
 
     //Loading the tree image and draws it with (x,y) as center.
