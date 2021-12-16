@@ -14,34 +14,31 @@ namespace DefaultNamespace
         public Material electricityMaterial;
         [Range(0.0f, 3.0f)] public float lineWidth = 0.5f;
         private static GameObject[] _pointsObjects;
+        private static int _nPointsObjects;
+        private static bool _updateNetwork;
 
         public void Start()
         {
             FindPoints();
-            ClearNetworkPointChange();
             CreateNetwork();
         }
 
         public void Update()
         {
             FindPoints();
-            foreach (GameObject pointObj in _pointsObjects)
+            if (_updateNetwork)
             {
-                if (pointObj.transform.hasChanged)
-                {
-                    CreateNetwork();
-                    ClearNetworkPointChange();
-                    break;
-                }
+                CreateNetwork();
             }
-
         }
 
-        public void CreateNetwork()
+        private void CreateNetwork()
         {
+            _updateNetwork = false;
+            ClearNetworkPointChange();
+            
             Debug.Log("<color=yellow>Creating Network</color>");
             ClearNetworkRender();
-            
 
             List<IPoint> iPoints = new List<IPoint>();
             Dictionary<IPoint, Vector3> pointMemory = new Dictionary<IPoint, Vector3>();
@@ -140,6 +137,21 @@ namespace DefaultNamespace
         private void FindPoints()
         {
             _pointsObjects = GameObject.FindGameObjectsWithTag("cPoint");
+            _updateNetwork = _pointsObjects.Length != _nPointsObjects;
+            _nPointsObjects = _pointsObjects.Length;
+
+            if (!_updateNetwork)
+            {
+                foreach (GameObject pointObj in _pointsObjects)
+                {
+                    if (pointObj.transform.hasChanged)
+                    {
+                        _updateNetwork = true;
+                        break;
+                    }
+                }
+            }
+            
             // Should be noted that this is not a good way of finding all the nodes since it take N time. 
             // In our situation it isn't a problem since we have very few gameObjects
             
