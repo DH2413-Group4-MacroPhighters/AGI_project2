@@ -6,6 +6,11 @@ TagManager:
   tags:
   - cloud
   - cPoint
+  - tree
+  - coalPlant
+  - nuclearPlant
+  - solarPlant
+  - windPlant
   layers:
   - Default
   - TransparentFX
