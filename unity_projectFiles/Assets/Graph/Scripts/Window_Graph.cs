@@ -17,7 +17,7 @@ public class Window_Graph : MonoBehaviour {
     private RectTransform dashTemplateX;
     private RectTransform dashTemplateY;
     private List<GameObject> gameObjectList;
-    private List<GameObject> gameObjectListBar;
+    private List<GameObject> gameObjectListBarchart;
     private List<int> energySourcesList;
     private List<int> emissionsList;
 
@@ -32,7 +32,7 @@ public class Window_Graph : MonoBehaviour {
 
         //stores copy of gameobjects created
         gameObjectList = new List<GameObject>();
-        gameObjectListBar = new List<GameObject>();
+        gameObjectListBarchart = new List<GameObject>();
 
         
         List<int> emissionsList = new List<int>() { 0 };
@@ -48,7 +48,7 @@ public class Window_Graph : MonoBehaviour {
             emissionsList.Add(emissions);
             ShowGraph(emissionsList, (int _i) => "D " + (_i + 1), (float _f) => "CO2 " + Mathf.RoundToInt(_f));
             
-        }, 1f);
+        }, 10f);
 
         FunctionPeriodic.Create(() => {
             //int sources = energySourcesList.Count;
@@ -225,11 +225,11 @@ public class Window_Graph : MonoBehaviour {
 
         List<string> sources = new List<string>() { "Fossil", "Renewable", "Nuclear" };
 
-        foreach (GameObject gameObject in gameObjectListBar)
+        foreach (GameObject gameObject in gameObjectListBarchart)
         {
             Destroy(gameObject);
         }
-        gameObjectListBar.Clear();
+        gameObjectListBarchart.Clear();
 
 
         for (int i = 0; i < energySourceList.Count; i++) {
@@ -251,7 +251,7 @@ public class Window_Graph : MonoBehaviour {
                 rectTransform.pivot = new Vector2(0, 1f);
                 //previousWidth = barWidth * (energySourceList[i] * sum);
                 previousWidth = rectTransform.sizeDelta.x;
-                gameObjectListBar.Add(gameObject);
+                gameObjectListBarchart.Add(gameObject);
 
                 RectTransform labelX = Instantiate(labelTemplateX);
                 labelX.SetParent(graphContainer, false);
@@ -265,7 +265,7 @@ public class Window_Graph : MonoBehaviour {
                     
                 
                 labelX.GetComponent<Text>().text = sources[i];
-                gameObjectList.Add(labelX.gameObject);
+                gameObjectListBarchart.Add(labelX.gameObject);
 
             }
             else {
@@ -303,10 +303,10 @@ public class Window_Graph : MonoBehaviour {
                 {
                     labelX.GetComponent<Text>().horizontalOverflow = HorizontalWrapMode.Wrap;
                 }
-                gameObjectList.Add(labelX.gameObject);
+                gameObjectListBarchart.Add(labelX.gameObject);
 
                 previousWidth = previousWidth + 2f + rectTransform.sizeDelta.x;
-                gameObjectListBar.Add(gameObject);
+                gameObjectListBarchart.Add(gameObject);
                 renewable = false;
 
                
