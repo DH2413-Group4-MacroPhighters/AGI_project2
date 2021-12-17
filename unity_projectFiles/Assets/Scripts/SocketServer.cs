@@ -95,6 +95,7 @@ public class SocketServer : MonoBehaviour
                 if (placed_objects.ContainsKey(ID)) {
                     continue;
                 }
+                placed_objects.Add(ID, null);
                 GameObject objectToPlace;
                 switch(placement.type)
                 {
@@ -137,7 +138,7 @@ public class SocketServer : MonoBehaviour
                 GameObject new_object = Instantiate(objectToPlace, position, rotation);
                 new_object.transform.Find("clientName").gameObject.GetComponent<TextMesh>().text = "Added by " + placement.clientName;
                 new_object.name = ID;
-                placed_objects.Add(ID, new_object);
+                placed_objects[ID] = new_object;
             }
             placement_dict.Clear();
         }
