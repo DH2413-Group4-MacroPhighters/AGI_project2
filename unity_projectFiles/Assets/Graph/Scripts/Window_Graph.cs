@@ -29,18 +29,20 @@ public class Window_Graph : MonoBehaviour {
         labelTemplateY = graphContainer.Find("labelTemplateY").GetComponent<RectTransform>();
         dashTemplateX = graphContainer.Find("dashTemplateX").GetComponent<RectTransform>();
         dashTemplateY = graphContainer.Find("dashTemplateY").GetComponent<RectTransform>();
-
+        RenderSettings.fog = true;
         //stores copy of gameobjects created
         gameObjectList = new List<GameObject>();
         gameObjectListBarchart = new List<GameObject>();
 
-        
+        RenderSettings.fogDensity = 0.001f;
+
         List<int> emissionsList = new List<int>() { 0 };
         energySourcesList = new List<int>() { 1, 1, 1 };
 
         //ShowGraph(valueList, (int _i) => "Day " + (_i + 1) + "\n Hr " + ((_i + 1) % 24), (float _f) => "CO2: " + Mathf.RoundToInt(_f));
         CreateBar(energySourcesList, new Vector2(0f, -36f), 310f);
 
+        
 
         FunctionPeriodic.Create(() => {            
 
@@ -56,15 +58,39 @@ public class Window_Graph : MonoBehaviour {
             //for (int i = 0; i < sources; i++) {
             //    energySourcesList.Add(UnityEngine.Random.Range(0, 500));
             //}
+            int fossil = GameObject.FindGameObjectsWithTag("coalPlant").Length;
+            float coalPlantIncrease = 0.0007f;
+            float totalFog = fossil * coalPlantIncrease;
+            if (fossil > 0)
+                
+            {
+                
+                
+                
 
+                // And enable fog
+                RenderSettings.fog = true;
+
+                // Set the fog amount 
+                RenderSettings.fogDensity = totalFog;
+            
+            }
             updateBar();
-            CreateBar(energySourcesList, new Vector2(0f, -36f), 310f );
+            CreateBar(energySourcesList, new Vector2(0f, -36f), 310f);
+            /*
+            int sumEnergySourcesList = energySourcesList[0] + energySourcesList[1] + energySourcesList[2];
+            Debug.Log(energySourcesList[0]);
+            float fogController = energySourcesList[0] * 1f / sumEnergySourcesList;
+            Debug.Log(fogController);
+            */
+            //RenderSettings.fogDensity = 0.1f * (energySourcesList[0] / sumEnergySourcesList * 1f) ;
             
         }, 1f);
         
 
 
     }
+
 
     public int calcEmissions()
     {
@@ -222,6 +248,11 @@ public class Window_Graph : MonoBehaviour {
         float previousWidth = 0;
         int sum = energySourceList.Sum();
         bool renewable = true;
+
+        if (energySourceList[0] / sum > 0.5)
+        {
+            
+        }
 
         List<string> sources = new List<string>() { "Fossil", "Renewable", "Nuclear" };
 
