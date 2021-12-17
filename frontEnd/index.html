@@ -21,6 +21,7 @@
       </svg>
     </p>
     <h1>Climate_ART</h1>
+    <h2 id='budget'>Your budget:</h2>
 
 <div id="map"></div>
 
@@ -129,6 +130,8 @@
 <script >
     var clientName = localStorage.getItem("clientName");
 
+    var budget = parseInt(localStorage.getItem("budget"));
+
     // create infobox
     var showInfoBox = function() {
         ons.createElement('infobox', {append: true})
@@ -160,6 +163,10 @@
             document
             .getElementById('start-dialog')
             .hide();
+            budget = 4000;
+            localStorage.setItem("budget", budget.toString());
+            document.getElementById('budget').textContent = 'Your budget: ' + localStorage.getItem('budget');
+            console.log("budget " + budget);
             }
         else {
             ons.notification.alert('Enter an alias');
@@ -206,6 +213,8 @@
     var imageUrl = '/uploads/map.png', imageBounds = [[-111,-111], [112, 112]];
     let overlay = L.imageOverlay(imageUrl, imageBounds, {interactive: true}).addTo(map);
     objects_layer.addTo(map);
+
+    const objectCosts = new Map([["tree", 100], ["pineTree", 100], ["bush", 50], ["rock", 10], ["coal", 500], ["nuclear", 500], ["solar", 1000], ["wind", 1000]]);
 
     function changeObject(objectName){
         objectType = objectName;
@@ -286,6 +295,15 @@
     }
 
     function remove(id) {
+        const json = JSON.parse(state);
+        const objectToRemove = json.objects[id];
+        var cost = objectCosts[objectToRemove.type];
+        console.log("type " + objectToRemove.type);
+        console.log("value " + cost);
+        budget += objectCosts.get(objectToRemove.type);
+        localStorage.setItem("budget", budget.toString());
+        document.getElementById('budget').textContent = 'Your budget: ' + localStorage.getItem('budget');
+        console.log("budget " + budget);
         socket.send("remove " + id);
     }
 
@@ -357,10 +375,20 @@
     }
 
     overlay.on('click', function(d) {
+        var cost = objectCosts.get(objectType);
+        if (cost > budget) {
+            alert('You don\'t have enough money!\nRemove things to get more.');
+            return;
+        }
+
+        budget -= cost;
+        localStorage.setItem("budget", budget.toString());
+        document.getElementById('budget').textContent = 'Your budget: ' + localStorage.getItem('budget');
         var coord = d.latlng;
         var lng = coord.lng;
         var lat = coord.lat;
         var ID = guid();
+        console.log("budget " + budget);
         sendCoords(objectType, lng, lat, ID, clientName);
     });
 
