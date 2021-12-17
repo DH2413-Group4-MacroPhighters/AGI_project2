@@ -141,6 +141,8 @@
 
     var budget = parseInt(localStorage.getItem("budget"));
 
+    var iRemoved = '';
+
     // create infobox
     var showInfoBox = function() {
         ons.createElement('infobox', {append: true})
@@ -307,19 +309,19 @@
 
     function remove(id) {
         const json = JSON.parse(state);
-        const objectToRemove = json.objects[id];
-        var cost = objectCosts[objectToRemove.type];
-        console.log("type " + objectToRemove.type);
-        console.log("value " + cost);
-        budget += objectCosts.get(objectToRemove.type);
-        localStorage.setItem("budget", budget.toString());
-        document.getElementById('budget').textContent = 'Your budget: ' + localStorage.getItem('budget');
-        console.log("budget " + budget);
+        iRemoved = id;
         socket.send("remove " + id);
     }
 
     function remove_from_state(id) {
         const json = JSON.parse(state);
+        if (iRemoved == id) {
+            const objectToRemove = json.objects[id];
+            var cost = objectCosts[objectToRemove.type];
+            budget += objectCosts.get(objectToRemove.type);
+            localStorage.setItem("budget", budget.toString());
+            document.getElementById('budget').textContent = 'Your budget: ' + localStorage.getItem('budget');
+        }
         delete json.objects[id];
         json.newID = "";
         clearState();
