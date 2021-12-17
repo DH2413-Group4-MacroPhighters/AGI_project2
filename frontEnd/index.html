@@ -216,7 +216,7 @@
     var placed_objects = '{}';
     var objects_layer = L.layerGroup([]);
 
-    var map = L.map('map', {crs: L.CRS.Simple}).setView([0, 0], 1);
+    var map = L.map('map', {crs: L.CRS.Simple}).setView([0, 0], 0.7);
     map.setMaxBounds(map.getBounds());
 
     var imageUrl = '/uploads/map.png', imageBounds = [[-111,-111], [112, 112]];
@@ -290,6 +290,9 @@
         var message_type = message.substr(0,message.indexOf(' '));
         switch(message_type) {
             case "clear":
+                budget = 4000;
+                localStorage.setItem('budget', budget.toString());
+                document.getElementById('budget').textContent = 'Your budget: ' + localStorage.getItem('budget');
                 clearState();
                 break;
             case "new-client":
