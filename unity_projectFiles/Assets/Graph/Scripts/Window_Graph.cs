@@ -50,7 +50,7 @@ public class Window_Graph : MonoBehaviour {
             emissionsList.Add(emissions);
             ShowGraph(emissionsList, (int _i) => "D " + (_i + 1), (float _f) => "CO2 " + Mathf.RoundToInt(_f));
             
-        }, 10f);
+        }, 24f);
 
         FunctionPeriodic.Create(() => {
             //int sources = energySourcesList.Count;
