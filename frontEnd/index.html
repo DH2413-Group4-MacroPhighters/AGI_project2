@@ -377,7 +377,7 @@
     overlay.on('click', function(d) {
         var cost = objectCosts.get(objectType);
         if (cost > budget) {
-            alert('You don\'t have enough money!');
+            alert('You don\'t have enough money!\nRemove things to get more.');
             return;
         }
 
