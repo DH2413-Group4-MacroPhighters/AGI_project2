@@ -10,7 +10,16 @@
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
     <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
     <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>
+        $(function(){
+            $('.objectCard').click(function(){
+                $("#Nature").children().children().removeClass('selected');
+                $("#PowerPlants").children().children().removeClass('selected');
+                $(this).addClass('selected');
+            });
+        }); 
+    </script>
     <link rel="stylesheet" href="index.css"/>
 </head>
 <body>
@@ -47,7 +56,7 @@
             <div><b>Bush</b></div>
             <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 50</div>
         </div>
-        <div class="objectCard" id="object-tree" onclick="changeObject('tree')">
+        <div class="objectCard selected" id="object-tree" onclick="changeObject('tree')">
             <img class="objectImg" src="./naturePics/tree3d.png"></img>
             <div><b>Tree</b></div>
             <div class="objectPrice"><img class="coinImg" src="coin.png"></img> 100</div>
@@ -219,7 +228,6 @@
     function changeObject(objectName){
         objectType = objectName;
     }
-
     //clears the state and removes everything from the map
     function clearState() {
         objects_layer.remove();
@@ -410,8 +418,6 @@
     *
      */
 </script>
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 </body>
